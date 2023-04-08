@@ -49,8 +49,10 @@ class YShoppingController
 		if ($pgval["mode"] === YShoppingLib::MODE_ORD_LIST) {
 			$status = $yshp->orderList($pgval["access_token"], $pgval["sellerid"], $resp_shp);
 		} else
-		if ($pgval["mode"] === YShoppingLib::MODE_ORD_INFO) {
-			$status = $yshp->orderInfo($pgval["access_token"], $pgval["sellerid"], $pgval["orderid"], $resp_shp);
+		if (($pgval["mode"] === YShoppingLib::MODE_ORD_INFO) ||
+		    ($pgval["mode"] === YShoppingLib::MODE_ORD_INFO_SHIP) ||
+		    ($pgval["mode"] === YShoppingLib::MODE_ORD_INFO_DETAIL)) {
+			$status = $yshp->orderInfo($pgval["access_token"], $pgval["sellerid"], $pgval["orderid"], $pgval["mode"], $resp_shp);
 		} else
 		if ($pgval["mode"] === YShoppingLib::MODE_ITEM_EDIT) {
 			$status = $yshp->editItem($pgval["access_token"], $pgval["sellerid"], $pgval["item_code"], $pgval["item_path"], $pgval["item_name"], $pgval["item_price"], $resp_shp);
