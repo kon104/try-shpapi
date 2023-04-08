@@ -13,6 +13,8 @@ class YShoppingLib extends ApiRequest
 	public const MODE_ORD_STAT_COUNT = "shp-ord-statcnt";
 	public const MODE_ORD_LIST = "shp-ord-list";
 	public const MODE_ORD_INFO = "shp-ord-info";
+	public const MODE_ORD_INFO_SHIP = "shp-ord-info-ship";
+	public const MODE_ORD_INFO_DETAIL = "shp-ord-info-detail";
 	public const MODE_ITEM_EDIT = "shp-item-edit";
 	public const MODE_ITEM_GET = "shp-item-get";
 	public const MODE_ITEM_SUBMIT = "shp-item-submit";
@@ -132,18 +134,22 @@ class YShoppingLib extends ApiRequest
 	}
 	// }}}
 
-	// {{{ public function orderInfo($access_token, $sellerid, $orderid, &$resp)
-	public function orderInfo($access_token, $sellerid, $orderid, &$resp)
+	// {{{ public function orderInfo($access_token, $sellerid, $orderid, $mode, &$resp)
+	public function orderInfo($access_token, $sellerid, $orderid, $mode, &$resp)
 	{
 		$fields = "";
 
 		$fields = $this->orderInfoFieldOrder($fields);
-//		$fields = $this->orderInfoFieldPay($fields);
-//		$fields = $this->orderInfoFieldShip($fields);
-		$fields = $this->orderInfoFieldDetail($fields);
-		$fields = $this->orderInfoFieldItem($fields);
-//		$fields = $this->orderInfoFieldSeller($fields);
-//		$fields = $this->orderInfoFieldBuyer($fields);
+		if ($mode === self::MODE_ORD_INFO_SHIP) {
+			$fields = $this->orderInfoFieldPay($fields);
+			$fields = $this->orderInfoFieldShip($fields);
+		} else
+		if ($mode === self::MODE_ORD_INFO_DETAIL) {
+			$fields = $this->orderInfoFieldDetail($fields);
+			$fields = $this->orderInfoFieldItem($fields);
+			$fields = $this->orderInfoFieldSeller($fields);
+			$fields = $this->orderInfoFieldBuyer($fields);
+		}
 
 		$debug = "node size of 'Field' in xml is: " . number_format(strlen($fields)) . "bytes";
 		$this->addDebug($debug);

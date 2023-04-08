@@ -37,7 +37,7 @@
 </head>
 <body>
 
-<h1>YConnect v2 + SHP API<?php if (!empty($pgval["stage"])) echo " (" . ucfirst($pgval["stage"]) . ")"; ?></h1>
+<h1>YConnect v2 + Y!SHP API<?php if (!empty($pgval["stage"])) echo " (" . ucfirst($pgval["stage"]) . ")"; ?></h1>
 
 <h2>Procedure for YConnect</h2>
 
@@ -87,7 +87,9 @@
 	<ul>
 		<li><?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?><a href="javascript: submitSpecifedMode('<?= YShoppingLib::MODE_ORD_STAT_COUNT ?>');"><?php endif; ?>注文ステータス別件数参照API<?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?></a><?php endif; ?>：[<label for="text_sellerid">ストア</label>]</li>
 		<li><?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?><a href="javascript: submitSpecifedMode('<?= YShoppingLib::MODE_ORD_LIST ?>');"><?php endif; ?>注文検索API (in the past month)<?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?></a><?php endif; ?>：[<label for="text_sellerid">ストア</label>]</li>
-		<li><?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?><a href="javascript: submitSpecifedMode('<?= YShoppingLib::MODE_ORD_INFO ?>');"><?php endif; ?>注文詳細API<?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?></a><?php endif; ?>：[<label for="text_sellerid">ストア</label>]＋[<label for="text_orderid">注文ID</label>]</li>
+		<li><?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?><a href="javascript: submitSpecifedMode('<?= YShoppingLib::MODE_ORD_INFO ?>');"><?php endif; ?>注文詳細API<?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?></a><?php endif; ?>：[<label for="text_sellerid">ストア</label>]＋[<label for="text_orderid">注文ID</label>]（type of node：注文）</li>
+		<li><?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?><a href="javascript: submitSpecifedMode('<?= YShoppingLib::MODE_ORD_INFO_SHIP ?>');"><?php endif; ?>注文詳細API<?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?></a><?php endif; ?>：[<label for="text_sellerid">ストア</label>]＋[<label for="text_orderid">注文ID</label>]（type of node：注文＋請求＋配送）</li>
+		<li><?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?><a href="javascript: submitSpecifedMode('<?= YShoppingLib::MODE_ORD_INFO_DETAIL ?>');"><?php endif; ?>注文詳細API<?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?></a><?php endif; ?>：[<label for="text_sellerid">ストア</label>]＋[<label for="text_orderid">注文ID</label>]（type of node：注文＋明細＋商品＋セラー＋バイヤー）</li>
 	</ul>
 </div>
 <!-- }}} -->
