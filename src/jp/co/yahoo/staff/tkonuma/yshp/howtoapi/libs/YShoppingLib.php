@@ -211,7 +211,10 @@ class YShoppingLib extends ApiRequest
 		. "IsWelcomeGiftIncludes,YamatoCoopStatus,FraudHoldStatus,"
 		. "PublicationTime,IsYahooAuctionOrder,YahooAuctionMerchantId,"
 		. "YahooAuctionId,IsYahooAuctionDeferred,YahooAuctionCategoryType,"
-		. "YahooAuctionBidType";
+		. "YahooAuctionBidType,YahooAuctionBundleType,GoodStoreStatus,"
+		. "CurrentGoodStoreBenefitApply,CurrentPromoPkgApply,LineGiftOrderId,"
+		. "IsLineGiftOrder,ImmediateBonus,SlowlyShipPoint,"
+		. "SlowlyShipPointFixDate,IsSlowlyShipPointFix";
 
 		return $fields;
 	}
@@ -224,16 +227,20 @@ class YShoppingLib extends ApiRequest
 		$fields = ($fields . (empty($fields) ? "" : ","))
 		. "PayStatus,SettleStatus,PayType,PayKind,PayMethod,PayMethodName,"
 		. "SellerHandlingCharge,PayActionTime,PayDate,PayNotes,SettleId,"
-		. "CardBrand,CardNumber,CardNumberLast4,CardExpireYear,CardExpireMonth,"
-		. "CardPayType,CardHolderName,CardPayCount,CardBirthDay,UseYahooCard,"
-		. "UseWallet,NeedBillSlip,NeedDetailedSlip,NeedReceipt,AgeConfirmField,"
-		. "AgeConfirmValue,AgeConfirmCheck,BillAddressFrom,BillFirstName,"
-		. "BillFirstNameKana,BillLastName,BillLastNameKana,BillZipCode,"
-		. "BillPrefecture,BillPrefectureKana,BillCity,BillCityKana,"
-		. "BillAddress1,BillAddress1Kana,BillAddress2,BillAddress2Kana,"
-		. "BillPhoneNumber,BillEmgPhoneNumber,BillMailAddress,BillSection1Field,"
+		. "CardBrand,CardNumber,CardNumberLast4,CardExpireYear,"
+		. "CardExpireMonth,CardPayType,CardHolderName,CardPayCount,"
+		. "CardBirthDay,UseYahooCard,UseWallet,NeedBillSlip,NeedDetailedSlip,"
+		. "NeedReceipt,AgeConfirmField,AgeConfirmValue,AgeConfirmCheck,"
+		. "BillAddressFrom,BillFirstName,BillFirstNameKana,BillLastName,"
+		. "BillLastNameKana,BillZipCode,BillPrefecture,BillPrefectureKana,"
+		. "BillCity,BillCityKana,BillAddress1,BillAddress1Kana,"
+		. "BillAddress2,BillAddress2Kana,BillPhoneNumber,"
+		. "BillEmgPhoneNumber,BillMailAddress,BillSection1Field,"
 		. "BillSection1Value,BillSection2Field,BillSection2Value,PayNo,"
-		. "PayNoIssueDate,ConfirmNumber,PaymentTerm,IsApplePay";
+		. "PayNoIssueDate,ConfirmNumber,PaymentTerm,IsApplePay,"
+		. "LineGiftPayMethodName,CombinedPayType,"
+		. "CombinedPayKind,CombinedPayMethod,PayMethodAmount,"
+		. "CombinedPayMethodName,CombinedPayMethodAmount";
 
 		return $fields;
 	}
