@@ -107,5 +107,18 @@ class YConnectLib extends ApiRequest
 	}
 	// }}}
 
+	// {{{ public static function makeCurlCommand($actoken)
+	public static function makeCurlCommand($actoken)
+	{
+		$cmd = "curl -v \\\n"
+			. " -H &quot;authorization: Bearer " . $actoken . "&quot; \\\n"
+			. " {url} \\\n"
+			. " {-X POST} \\\n"
+ 			. " {-d @request.xml} \\\n"
+			. "";
+		return $cmd;
+	}
+	// }}}
+
 }
 

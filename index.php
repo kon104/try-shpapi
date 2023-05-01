@@ -150,6 +150,10 @@
 	<tr><td><label for="text_refresh_token">refresh_token</label></td><td><input type="text" name="refresh_token" id="text_refresh_token" class="tokentxt" value="<?= $pgval["refresh_token"] ?>"></td></tr>
 	<tr><td>expires_in</td><td><?= $pgval["expires_in"] ?></td></tr>
 	<tr><td><label for="text_id_token">id_token</label></td><td><input type="text" name="id_token" id="text_id_token" class="tokentxt" value="<?= $pgval["id_token"] ?>"></td></tr>
+<!--
+	<tr><td>curl&nbsp;<button type="button" id="copy_curl">copy</button></td><td><input type="text" name="cmd_curl" id="text_cmd_curl" value="<?= $pgval["cmd_curl"] ?>" readonly></td></tr>
+-->
+	<tr><td>curl&nbsp;<button type="button" id="copy_curl">copy</button></td><td><textarea name="cmd_curl" id="text_cmd_curl" class="tokentxt"><?= $pgval["cmd_curl"] ?></textarea></td></tr>
 </table>
 
 <input type="hidden" name="mode" id="mode" value="">
@@ -182,6 +186,7 @@
 <script type="text/javascript">
 
 var selectApi = document.getElementById('select_api');
+var copyCurl = document.getElementById('copy_curl');
 
 selectApi.addEventListener('change', function(e) {
 
@@ -198,6 +203,14 @@ selectApi.addEventListener('change', function(e) {
 	// change displaying the api panel
 	changeDisplayingApiPanel(index);
 });
+
+copyCurl.addEventListener('click', function(e) {
+	var target = document.getElementById('text_cmd_curl');
+	target.select();
+	document.execCommand("Copy");
+	console.log("clicked copy curl");
+});
+
 
 window.onload = function() {
 	var index = selectApi.selectedIndex;

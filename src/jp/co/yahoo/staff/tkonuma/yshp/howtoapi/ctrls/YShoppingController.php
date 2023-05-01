@@ -27,6 +27,8 @@ class YShoppingController
 		$pgval["refresh_token"]	= array_key_exists("refresh_token", $POST) ? $POST["refresh_token"] : null;
 		$pgval["expires_in"]	= array_key_exists("expires_in", $POST) ? $POST["expires_in"] : null;
 		$pgval["id_token"]		= array_key_exists("id_token", $POST) ? $POST["id_token"] : null;
+		$pgval["cmd_curl"]		= array_key_exists("cmd_curl", $POST) ? $POST["cmd_curl"] : null;
+
 		$pgval["api"]			= array_key_exists("api", $POST) ? $POST["api"] : null;
 		$pgval["sellerid"]		= array_key_exists("sellerid", $POST) ? $POST["sellerid"] : null;
 		$pgval["item_code"]		= array_key_exists("item_code", $POST) ? $POST["item_code"] : null;
@@ -95,11 +97,12 @@ class YShoppingController
 				$pgval["refresh_token"] = $resp_axs["res"]["body"]->refresh_token;
 				$pgval["expires_in"] = $resp_axs["res"]["body"]->expires_in;
 				$pgval["id_token"] = $resp_axs["res"]["body"]->id_token;
-
+				$pgval["cmd_curl"] = $ycon->makeCurlCommand($pgval["access_token"]);
 			} else
 			if ($pgval["mode"] === YConnectLib::MODE_REFRESH) {
 				$status = $ycon->refreshAccessToken($pgval["client_id"], $pgval["secret"], $pgval["refresh_token"], $resp_axs);
 				$pgval["access_token"] = $resp_axs["res"]["body"]->access_token;
+				$pgval["cmd_curl"] = $ycon->makeCurlCommand($pgval["access_token"]);
 			} else
 			if ($pgval["code"] !== null) {
 				$pgval["nonce"] = $_SESSION["nonce"];
