@@ -35,6 +35,7 @@ class YShoppingController
 		$pgval["stcat_key"]		= array_key_exists("stcat_key", $POST) ? $POST["stcat_key"] : null;
 		$pgval["query"]			= array_key_exists("query", $POST) ? $POST["query"] : null;
 		$pgval["orderid"]		= array_key_exists("orderid", $POST) ? $POST["orderid"] : null;
+		$pgval["topicid"]		= array_key_exists("topicid", $POST) ? $POST["topicid"] : null;
 		$pgval["item_path"]		= array_key_exists("item_path", $POST) ? $POST["item_path"] : null;
 		$pgval["item_name"]		= array_key_exists("item_name", $POST) ? $POST["item_name"] : null;
 		$pgval["item_price"]	= array_key_exists("item_price", $POST) ? $POST["item_price"] : null;
@@ -82,6 +83,12 @@ class YShoppingController
 		} else
 		if ($pgval["mode"] === YShoppingLib::MODE_TALK_NEW_TOPIC) {
 			$status = $yshp->externalStoreTopic($pgval["access_token"], $pgval["sellerid"], $resp_shp);
+		} else
+		if ($pgval["mode"] === YShoppingLib::MODE_TALK_DETAIL) {
+			$status = $yshp->externalTalkDetail($pgval["access_token"], $pgval["sellerid"], $pgval["topicid"], $resp_shp);
+		} else
+		if ($pgval["mode"] === YShoppingLib::MODE_TALK_LIST) {
+			$status = $yshp->externalTalkList($pgval["access_token"], $pgval["sellerid"], $resp_shp);
 		} else {
 			session_start();
 			if ($pgval["mode"] === YConnectLib::MODE_SETID) {

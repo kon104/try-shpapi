@@ -79,6 +79,10 @@
 		<td><label for="text_query">検索文字列: </label></td><td><input type="text" name="query" id="text_query" value="<?= $pgval["query"] ?>"></td></tr>
 	<tr><td><label for="text_orderid">注文ID: </label></td><td><input type="text" name="orderid" id="text_orderid" value="<?= $pgval["orderid"] ?>"></td>
 		<td></td><td></td></tr>
+
+	<tr><td><label for="text_topicid">トピックID: </label></td><td><input type="text" name="topicid" id="text_topicid" value="<?= $pgval["topicid"] ?>"></td>
+		<td></td><td></td></tr>
+
 </table>
 <!-- }}}  -->
 
@@ -135,8 +139,11 @@
 <!-- {{{ id="api-inquiry" -->
 <div class="apipanel" id="api-inquiry">
 	<ul>
-		<li><div style="color:#ff0000; font-weight:bold;">The following APIs are not allowed to execute in sandbox.</div></li>
+		<li><?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?><a href="javascript: submitSpecifedMode('<?= YShoppingLib::MODE_TALK_LIST ?>');"><?php endif; ?>質問一覧API<?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?></a><?php endif; ?>：[<label for="text_sellerid">ストア</label>]</li>
+		<li><?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?><a href="javascript: submitSpecifedMode('<?= YShoppingLib::MODE_TALK_DETAIL ?>');"><?php endif; ?>質問詳細API<?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?></a><?php endif; ?>：[<label for="text_sellerid">ストア</label>]＋[<label for="text_topicid">トピックID</label>]</li>
+<!--
 		<li><?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?><a href="javascript: submitSpecifedMode('<?= YShoppingLib::MODE_TALK_NEW_TOPIC ?>');"><?php endif; ?>セラー新規問い合わせ投稿API<?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?></a><?php endif; ?>：[<label for="text_sellerid">ストア</label>]</li>
+-->
 	</ul>
 </div>
 <!-- }}} -->
