@@ -24,6 +24,8 @@ class YShoppingLib extends ApiRequest
 	public const MODE_PROD_BRAND_LIST = "shp-prod-brand-list";
 	public const MODE_PROD_CATEGORY_LIST = "shp-prod-category-list";
 	public const MODE_TALK_NEW_TOPIC = "shp-talk-new-topic";
+	public const MODE_TALK_DETAIL = "shp-talk-detail";
+	public const MODE_TALK_LIST = "shp-talk-list";
 
 	private const HOST_SANDBOX = "https://test.circus.shopping.yahooapis.jp";
 	private const HOST_PRODUCT = "https://circus.shopping.yahooapis.jp";
@@ -40,6 +42,8 @@ class YShoppingLib extends ApiRequest
 	private const PATH_PROD_BRAND_LIST		= "/ShoppingWebService/V1/getShopBrandList";
 	private const PATH_PROD_CATEGORY_LIST	= "/ShoppingWebService/V1/getShopCategoryList";
 	private const PATH_TALK_NEW_TOPIC		= "/ShoppingWebService/V1/externalStoreTopic";
+	private const PATH_TALK_DETAIL			= "/ShoppingWebService/V1/externalTalkDetail";
+	private const PATH_TALK_LIST			= "/ShoppingWebService/V1/externalTalkList";
 
 	private $stage = null;
 
@@ -281,7 +285,8 @@ class YShoppingLib extends ApiRequest
 		// Details
 		$fields = ($fields . (empty($fields) ? "" : ","))
 		. "PayCharge,ShipCharge,GiftWrapCharge,Discount,Adjustments,"
-		. "SettleAmount,UsePoint,TotalPrice,SettlePayAmount,IsGetPointFixAll,"
+		. "SettleAmount,UsePoint,GiftCardDiscount,TotalPrice,"
+		. "SettlePayAmount,IsGetPointFixAll,"
 		. "TotalMallCouponDiscount,IsGetStoreBonusFixAll";
 
 		return $fields;
@@ -301,7 +306,8 @@ class YShoppingLib extends ApiRequest
 		. "LeadTimeText,LeadTimeStart,LeadTimeEnd,PriceType,PickAndDeliveryCode,"
 		. "PickAndDeliveryTransportRuleType,YamatoUndeliverableReason,"
 		. "StoreBonusRatioSeller,UnitGetStoreBonus,IsGetStoreBonusFix,"
-		. "GetStoreBonusFixDate";
+		. "GetStoreBonusFixDate,ItemYahooAucId,ItemYahooAucMerchantId,"
+		. "PointBaseUnitPrice,MallCouponData";
 
 		return $fields;
 	}
@@ -506,6 +512,49 @@ class YShoppingLib extends ApiRequest
 
 		parent::setBearerAuth($access_token);
 		$stat = parent::httpPost($url, $json);
+		$resp = parent::getResponse();
+
+		return $stat;
+	}
+	// }}}
+
+	// {{{ public function externalTalkDetail($access_token, $sellerid, $topicid, &$resp)
+	public function externalTalkDetail($access_token, $sellerid, $topicid, &$resp)
+	{
+		$param = array(
+			"sellerId" => $sellerid,
+			"topicId" => $topicid,
+		);
+
+		$param = http_build_query($param);
+		$url = $this->provideApiUrl(self::PATH_TALK_DETAIL);
+		$url .= "?" . $param;
+
+		parent::setBearerAuth($access_token);
+		$stat = parent::httpGet($url);
+		$resp = parent::getResponse();
+
+		return $stat;
+	}
+	// }}}
+
+	// {{{ public function externalTalkList($access_token, $sellerid, &$resp)
+	public function externalTalkList($access_token, $sellerid, &$resp)
+	{
+error_log("#####");
+error_log($query);
+error_log("#####");
+
+		$param = array(
+			"sellerId" => $sellerid,
+		);
+
+		$param = http_build_query($param);
+		$url = $this->provideApiUrl(self::PATH_TALK_LIST);
+		$url .= "?" . $param;
+
+		parent::setBearerAuth($access_token);
+		$stat = parent::httpGet($url);
 		$resp = parent::getResponse();
 
 		return $stat;
