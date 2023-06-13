@@ -1,0 +1,10 @@
+<Req>
+ <SellerId>snbx-cvovsibfi</SellerId>
+ <Target>
+  <OrderId>snbx-cvovsibfi-10000039</OrderId>
+ </Target>
+ <Order>
+  <PayMethod>payment_b1</PayMethod>
+  <PayMethodName>三井住友銀行振込</PayMethodName>
+ </Order>
+</Req>

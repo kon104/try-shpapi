@@ -1,0 +1,1 @@
+seller_id=snbx-cvovsibfi&item_code=api-20230519-001&path=TestCategory&name=Item%202023.05.19-001&product_category=4247&price=1234&sale_period_start=2023052001&sale_period_end=2024053123&reserve_price=1111&reserve_selling_period_start=2023060107&reserve_selling_period_end=2023060207
