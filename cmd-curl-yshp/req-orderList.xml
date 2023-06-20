@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Req>
+ <!-- 注文検索API -->
+ <Search>
+  <!-- <Sort>-order_time</Sort> -->
+  <Condition>
+   <!-- <SellerId>snbx-cvovsibfi</SellerId> -->
+   <!-- <OrderTimeFrom>20230520000000</OrderTimeFrom> -->
+   <OrderId>snbx-cvovsibfi-10000069</OrderId>
+  </Condition>
+  <Field>OrderId,Version,IsSeen,OrderTime,OrderStatus,PayStatus,SettleStatus,ShipStatus</Field>
+ </Search>
+ <SellerId>snbx-cvovsibfi</SellerId>
+</Req>
