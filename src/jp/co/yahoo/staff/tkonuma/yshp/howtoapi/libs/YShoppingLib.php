@@ -23,9 +23,12 @@ class YShoppingLib extends ApiRequest
 	public const MODE_IMAGE_LIST = "shp-image-list";
 	public const MODE_PROD_BRAND_LIST = "shp-prod-brand-list";
 	public const MODE_PROD_CATEGORY_LIST = "shp-prod-category-list";
-	public const MODE_TALK_NEW_TOPIC = "shp-talk-new-topic";
+	public const MODE_TALK_ADD = "shp-talk-add";
 	public const MODE_TALK_DETAIL = "shp-talk-detail";
 	public const MODE_TALK_LIST = "shp-talk-list";
+	public const MODE_TALK_READ = "shp-talk-read";
+
+	public const MODE_TALK_NEW_TOPIC = "shp-talk-new-topic";
 
 	private const HOST_SANDBOX = "https://test.circus.shopping.yahooapis.jp";
 	private const HOST_PRODUCT = "https://circus.shopping.yahooapis.jp";
@@ -41,9 +44,12 @@ class YShoppingLib extends ApiRequest
 	private const PATH_IMAGE_LIST			= "/ShoppingWebService/V1/itemImageList";
 	private const PATH_PROD_BRAND_LIST		= "/ShoppingWebService/V1/getShopBrandList";
 	private const PATH_PROD_CATEGORY_LIST	= "/ShoppingWebService/V1/getShopCategoryList";
-	private const PATH_TALK_NEW_TOPIC		= "/ShoppingWebService/V1/externalStoreTopic";
+	private const PATH_TALK_ADD				= "/ShoppingWebService/V1/externalTalkAdd";
 	private const PATH_TALK_DETAIL			= "/ShoppingWebService/V1/externalTalkDetail";
 	private const PATH_TALK_LIST			= "/ShoppingWebService/V1/externalTalkList";
+	private const PATH_TALK_READ			= "/ShoppingWebService/V1/externalTalkRead";
+
+	private const PATH_TALK_NEW_TOPIC		= "/ShoppingWebService/V1/externalStoreTopic";
 
 	private $stage = null;
 
@@ -495,23 +501,24 @@ class YShoppingLib extends ApiRequest
 	}
 	// }}}
 
-	// {{{ public function externalStoreTopic($access_token, $sellerid, &$resp)
-	public function externalStoreTopic($access_token, $sellerid, &$resp)
+	// {{{ public function externalTalkAdd($access_token, $sellerid, $topicid, $body, &$resp)
+	public function externalTalkAdd($access_token, $sellerid, $topicid, $body, &$resp)
 	{
-		$now = date("c");
-		$ar = array(
-			"sellerId" => $sellerid,
-			"categoryId" => 44,
-			"orderId" => "snbx-cvovsibfi-10000003",
-			"title" => "Title: " . $now,
-			"body" => "Message: " . $now
+		$param = array(
+			"topicId" => $topicid,
 		);
-		$json = json_encode($ar);
 
-		$url = $this->provideApiUrl(self::PATH_TALK_NEW_TOPIC);
+		$query = array(
+			"sellerId" => $sellerid,
+			"body" => $body,
+		);
+
+		$param = http_build_query($param);
+		$url = $this->provideApiUrl(self::PATH_TALK_ADD);
+		$url .= "?" . $param;
 
 		parent::setBearerAuth($access_token);
-		$stat = parent::httpPost($url, $json);
+		$stat = parent::httpPost($url, $query, parent::CTYPE_JSON);
 		$resp = parent::getResponse();
 
 		return $stat;
@@ -541,10 +548,6 @@ class YShoppingLib extends ApiRequest
 	// {{{ public function externalTalkList($access_token, $sellerid, &$resp)
 	public function externalTalkList($access_token, $sellerid, &$resp)
 	{
-error_log("#####");
-error_log($query);
-error_log("#####");
-
 		$param = array(
 			"sellerId" => $sellerid,
 		);
@@ -555,6 +558,50 @@ error_log("#####");
 
 		parent::setBearerAuth($access_token);
 		$stat = parent::httpGet($url);
+		$resp = parent::getResponse();
+
+		return $stat;
+	}
+	// }}}
+
+	// {{{ public function externalTalkRead($access_token, $sellerid, $topicid, &$resp)
+	public function externalTalkRead($access_token, $sellerid, $topicid, &$resp)
+	{
+		$param = array(
+			"topicId" => $topicid
+		);
+		$query = array(
+			"sellerId" => $sellerid
+		);
+
+		$param = http_build_query($param);
+		$url = $this->provideApiUrl(self::PATH_TALK_READ);
+		$url .= "?" . $param;
+
+		parent::setBearerAuth($access_token);
+		$stat = parent::httpPut($url, $query, parent::CTYPE_JSON);
+		$resp = parent::getResponse();
+
+		return $stat;
+	}
+	// }}}
+
+	// {{{ public function externalStoreTopic($access_token, $sellerid, $orderid, $topic_cat, $title, $body, &$resp)
+	public function externalStoreTopic($access_token, $sellerid, $orderid, $topic_cat, $title, $body, &$resp)
+	{
+		$query = array(
+			"sellerId" => $sellerid,
+			"categoryId" => $topic_cat,
+			"orderId" => $orderid,
+			"title" => $title,
+			"body" => $body
+		);
+
+		$url = $this->provideApiUrl(self::PATH_TALK_NEW_TOPIC);
+
+		parent::setBearerAuth($access_token);
+//		$stat = parent::httpPost($url, $query, parent::CTYPE_JSON);
+		$stat = parent::httpPost($url, $query);
 		$resp = parent::getResponse();
 
 		return $stat;

@@ -4,7 +4,10 @@ namespace myapp\jp\co\yahoo\staff\tkonuma\yshp\howtoapi\libs;
 
 class ApiRequest
 {
+	const CTYPE_JSON = "json";
+
 	private $ch;
+	private $req_url;
 	private $req_header;
 	private $req_rawbody = null;
 	private $res_status;
@@ -42,24 +45,51 @@ class ApiRequest
 	protected function httpGet($url)
 	{
 		curl_setopt($this->ch, CURLOPT_HTTPGET, true);
-		curl_setopt($this->ch, CURLOPT_URL, $url);
-		$status = self::httpExecute();
+		$status = self::httpExecute($url);
 
 		return $status;
 	}
 	// }}}
 
-	// {{{ protected function httpPost($url, $post_data)
-	protected function httpPost($url, $post_data)
+	// {{{ protected function httpPost($url, $post_data, $ctype = null)
+	protected function httpPost($url, $post_data, $ctype = null)
 	{
-		if (gettype($post_data) === "array") {
+		if ($ctype === null) {
 			$post_data = http_build_query($post_data);
+		} elseif ($ctype === $this::CTYPE_JSON) {
+			$post_data = json_encode($post_data);
+//			curl_setopt($this->ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
 		}
+
 		$this->req_rawbody = $post_data;
 		curl_setopt($this->ch, CURLOPT_POST, true);
 		curl_setopt($this->ch, CURLOPT_POSTFIELDS, $post_data);
-		curl_setopt($this->ch, CURLOPT_URL, $url);
-		$status = self::httpExecute();
+		$status = self::httpExecute($url);
+
+		return $status;
+	}
+	// }}}
+
+	// {{{ protected function httpPut($url, $put_data, $ctype = null)
+	protected function httpPut($url, $put_data, $ctype = null)
+	{
+/*
+		if (gettype($put_data) === "array") {
+			$put_data = http_build_query($put_data);
+		}
+*/
+		if ($ctype === null) {
+			$put_data = http_build_query($put_data);
+		} elseif ($ctype === $this::CTYPE_JSON) {
+			$put_data = json_encode($put_data);
+//			curl_setopt($this->ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+		}
+
+		$this->req_rawbody = $put_data;
+//		curl_setopt($this->ch, CURLOPT_PUT, true);
+		curl_setopt($this->ch, CURLOPT_CUSTOMREQUEST, 'PUT');
+		curl_setopt($this->ch, CURLOPT_POSTFIELDS, $put_data);
+		$status = self::httpExecute($url);
 
 		return $status;
 	}
@@ -72,9 +102,10 @@ class ApiRequest
 	}
 	// }}}
 
-	// {{{ private function httpExecute()
-	private function httpExecute()
+	// {{{ private function httpExecute($url)
+	private function httpExecute($url)
 	{
+		curl_setopt($this->ch, CURLOPT_URL, $url);
 		$response = curl_exec($this->ch);
 		$res_info = curl_getinfo($this->ch);
 		$req_head = curl_getinfo($this->ch, CURLINFO_HEADER_OUT);
@@ -88,6 +119,7 @@ class ApiRequest
 		$res_head = self::makeHeaderList($res_head);
 		$res_body = self::alterBodyList($res_head, $res_rawbody);
 
+		$this->req_url = $url;
 		$this->req_header = $req_head;
 		$this->res_status = $res_stat;
 		$this->res_header = $res_head;
@@ -103,6 +135,7 @@ class ApiRequest
 	{
 		$res = array();
 		$res["req"] = array(
+			"url" => $this->req_url,
 			"head" => $this->req_header
 		);
 		if (is_null($this->req_rawbody) === false) {

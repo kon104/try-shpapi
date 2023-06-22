@@ -23,6 +23,20 @@
 		"api-product" => "製品/カテゴリ/ブランドAPI",
 		"api-inquiry" => "問い合わせ管理API"
 	);
+	$pgparts_sel_topic_cat = array(
+		"31" => "お支払い（支払い方法の連絡）",
+		"32" => "お支払い（未入金の連絡）",
+		"33" => "お支払い（その他）",
+		"35" => "発送（発送先の確認）",
+		"36" => "発送（発送日時の連絡）",
+		"37" => "発送（再発送の連絡）",
+		"38" => "発送（その他）",
+		"40" => "注文内容（注文内容の確認）",
+		"41" => "注文内容（注文キャンセルの連絡）",
+		"42" => "注文内容（その他）",
+		"43" => "領収書",
+		"44" => "その他",
+	);
 
 ?>
 <!DOCTYPE html>
@@ -79,9 +93,15 @@
 		<td><label for="text_query">検索文字列: </label></td><td><input type="text" name="query" id="text_query" value="<?= $pgval["query"] ?>"></td></tr>
 	<tr><td><label for="text_orderid">注文ID: </label></td><td><input type="text" name="orderid" id="text_orderid" value="<?= $pgval["orderid"] ?>"></td>
 		<td></td><td></td></tr>
-
 	<tr><td><label for="text_topicid">トピックID: </label></td><td><input type="text" name="topicid" id="text_topicid" value="<?= $pgval["topicid"] ?>"></td>
-		<td></td><td></td></tr>
+		<td><label for="text_topic_cat">トピックカテゴリ: </label></td><td><select name="topic_cat" id="text_topic_cat">
+		<?php foreach ($pgparts_sel_topic_cat as $key => $val) : ?>
+		<?php $key = (string)$key; ?>
+			<option value="<?= $key ?>"<?php if ($key === $pgval["topic_cat"]) echo " selected"; ?>><?= $val ?></option>
+		<?php endforeach; ?>
+		</select></td></tr>
+	<tr><td><label for="text_title">タイトル: </label></td><td><input type="text" name="title" id="text_title" value="<?= $pgval["title"] ?>"></td>
+		<td><label for="text_body">本文: </label></td><td><input type="text" name="body" id="text_body" value="<?= $pgval["body"] ?>"></td></tr>
 
 </table>
 <!-- }}}  -->
@@ -139,11 +159,14 @@
 <!-- {{{ id="api-inquiry" -->
 <div class="apipanel" id="api-inquiry">
 	<ul>
-		<li><?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?><a href="javascript: submitSpecifedMode('<?= YShoppingLib::MODE_TALK_LIST ?>');"><?php endif; ?>質問一覧API<?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?></a><?php endif; ?>：[<label for="text_sellerid">ストア</label>]</li>
+		<li><?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?><a href="javascript: submitSpecifedMode('<?= YShoppingLib::MODE_TALK_ADD ?>');"><?php endif; ?>メッセージ投稿API<?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?></a><?php endif; ?>：[<label for="text_sellerid">ストア</label>]＋[<label for="text_topicid">トピックID</label>]＋[<label for="text_body">本文</label>]</li>
 		<li><?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?><a href="javascript: submitSpecifedMode('<?= YShoppingLib::MODE_TALK_DETAIL ?>');"><?php endif; ?>質問詳細API<?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?></a><?php endif; ?>：[<label for="text_sellerid">ストア</label>]＋[<label for="text_topicid">トピックID</label>]</li>
-<!--
-		<li><?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?><a href="javascript: submitSpecifedMode('<?= YShoppingLib::MODE_TALK_NEW_TOPIC ?>');"><?php endif; ?>セラー新規問い合わせ投稿API<?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?></a><?php endif; ?>：[<label for="text_sellerid">ストア</label>]</li>
--->
+		<li><?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?><a href="javascript: submitSpecifedMode('<?= YShoppingLib::MODE_TALK_LIST ?>');"><?php endif; ?>質問一覧API<?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?></a><?php endif; ?>：[<label for="text_sellerid">ストア</label>]</li>
+
+		<li>X: <?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?><a href="javascript: submitSpecifedMode('<?= YShoppingLib::MODE_TALK_READ ?>');"><?php endif; ?>既読API<?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?></a><?php endif; ?>：[<label for="text_sellerid">ストア</label>]＋[<label for="text_topicid">トピックID</label>]</li>
+
+		<li><?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?><a href="javascript: submitSpecifedMode('<?= YShoppingLib::MODE_TALK_NEW_TOPIC ?>');"><?php endif; ?>セラー新規問い合わせ投稿API<?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?></a><?php endif; ?>：[<label for="text_sellerid">ストア</label>]＋[<label for="text_orderid"]>注文ID</label>]＋[<label for="text_topic_cat"]>トピックカテゴリ</label>]＋[<label for="text_title">タイトル</label>]＋[<label for="text_body">本文</label>]</li>
+
 	</ul>
 </div>
 <!-- }}} -->
