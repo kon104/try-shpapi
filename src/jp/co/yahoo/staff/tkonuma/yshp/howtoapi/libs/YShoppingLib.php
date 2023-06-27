@@ -57,7 +57,7 @@ class YShoppingLib extends ApiRequest
 	private const PATH_TALK_FILE_ADD		= "/ShoppingWebService/V1/externalTalkFileAdd";
 	private const PATH_TALK_FILE_DOWNLOAD	= "/ShoppingWebService/V1/externalTalkFileDownload";
 	private const PATH_TALK_FILE_DELETE		= "/ShoppingWebService/V1/externalTalkFileDelete";
-	private const PATH_TALK_NEW_TOPIC		= "/ShoppingWebService/V1/externalStoreTopic";
+	private const PATH_TALK_NEW_TOPIC		= "/ShoppingWebService/V2/externalStoreTopic";
 
 	private $stage = null;
 
@@ -99,53 +99,28 @@ class YShoppingLib extends ApiRequest
 	// }}}
 
 	// {{{ public function orderList($access_token, $sellerid, &$resp)
-	// how to make xml: https://www.php.net/manual/ja/example.xmlwriter-simple.php
 	public function orderList($access_token, $sellerid, &$resp)
 	{
 		$pastymd = date("Ymd000000", strtotime("-1 month"));
 
-		$xw = xmlwriter_open_memory();
-		xmlwriter_set_indent($xw, true);
-		xmlwriter_start_document($xw, '1.0', 'UTF-8');
-
-		xmlwriter_start_element($xw, "Req");
-		xmlwriter_start_element($xw, "Search");
-
-		xmlwriter_start_element($xw, "Sort");
-		xmlwriter_text($xw, "-order_time");
-		xmlwriter_end_element($xw);	// SellerId
-
-		xmlwriter_start_element($xw, "Condition");
-
-		xmlwriter_start_element($xw, "SellerId");
-		xmlwriter_text($xw, $sellerid);
-		xmlwriter_end_element($xw);	// SellerId
-
-		xmlwriter_start_element($xw, "OrderTimeFrom");
-		xmlwriter_text($xw, $pastymd);	// yyyymmddhhmmss
-		xmlwriter_end_element($xw);	// OrderTimeFrom
-
-		xmlwriter_end_element($xw);	// Condition
-		xmlwriter_start_element($xw, "Field");
-		xmlwriter_text($xw, "OrderId,Version,IsSeen,OrderTime,OrderStatus,PayStatus,SettleStatus,ShipStatus");
-		xmlwriter_end_element($xw);	// Field
-		xmlwriter_end_element($xw);	// Search
-
-		xmlwriter_start_element($xw, "SellerId");
-		xmlwriter_text($xw, $sellerid);
-		xmlwriter_end_element($xw);	// SellerId
-
-		xmlwriter_end_element($xw);	// Req
-
-		xmlwriter_end_document($xw);
-		$xml = xmlwriter_output_memory($xw);
-
-//	var_dump($xml);
+		$xml = array(
+			"Req" => array(
+				"Search" => array(
+					"Sort" => "-order_time",
+					"Condition" => array(
+						"SellerId" => $sellerid,
+						"OrderTimeFrom" => $pastymd
+					),
+					"Field" => "OrderId,Version,IsSeen,OrderTime,OrderStatus,PayStatus,SettleStatus,ShipStatus"
+				),
+				"SellerId" => $sellerid
+			)
+		);
 
 		$url = $this->provideApiUrl(self::PATH_ORDER_LIST);
 
 		parent::setBearerAuth($access_token);
-		$stat = parent::httpPost($url, $xml);
+		$stat = parent::httpPost($url, $xml, parent::CTYPE_XML);
 		$resp = parent::getResponse();
 
 		return $stat;
@@ -172,39 +147,20 @@ class YShoppingLib extends ApiRequest
 		$debug = "node size of 'Field' in xml is: " . number_format(strlen($fields)) . "bytes";
 		$this->addDebug($debug);
 
-		$xw = xmlwriter_open_memory();
-		xmlwriter_set_indent($xw, true);
-		xmlwriter_start_document($xw, '1.0', 'UTF-8');
-
-		xmlwriter_start_element($xw, "Req");
-
-		xmlwriter_start_element($xw, "SellerId");
-		xmlwriter_text($xw, $sellerid);
-		xmlwriter_end_element($xw);	// SellerId
-
-		xmlwriter_start_element($xw, "Target");
-
-		xmlwriter_start_element($xw, "OrderId");
-		xmlwriter_text($xw, $orderid);
-		xmlwriter_end_element($xw);	// OrderId
-
-		xmlwriter_start_element($xw, "Field");
-		xmlwriter_text($xw, $fields);
-		xmlwriter_end_element($xw);	// Field
-
-		xmlwriter_end_element($xw);	// Target
-
-		xmlwriter_end_element($xw);	// Req
-
-		xmlwriter_end_document($xw);
-		$xml = xmlwriter_output_memory($xw);
-
-//	var_dump($xml);
+		$xml = array(
+			"Req" => array(
+				"SellerId" => $sellerid,
+				"Target" => array(
+					"OrderId" => $orderid,
+					"Field" => $fields
+				)
+			)
+		);
 
 		$url = $this->provideApiUrl(self::PATH_ORDER_INFO);
 
 		parent::setBearerAuth($access_token);
-		$stat = parent::httpPost($url, $xml);
+		$stat = parent::httpPost($url, $xml, parent::CTYPE_XML);
 		$resp = parent::getResponse();
 
 		return $stat;
@@ -457,7 +413,6 @@ class YShoppingLib extends ApiRequest
 			"seller_id" => $sellerid,
 			"item_code" => $item_code
 		);
-		$data = http_build_query($data);
 
 		$url = $this->provideApiUrl(self::PATH_STOCK_GET);
 
@@ -520,7 +475,7 @@ class YShoppingLib extends ApiRequest
 			"sellerId" => $sellerid,
 			"body" => $body,
 		);
-		if ($objectkey !== null) {
+		if (($objectkey !== null) && ($objectkey !== "")) {
 			$pathinfo = pathinfo($objectkey);
 			$query["fileList"] = array();
 			$query["fileList"][] = array(
@@ -726,8 +681,7 @@ class YShoppingLib extends ApiRequest
 		$url = $this->provideApiUrl(self::PATH_TALK_NEW_TOPIC);
 
 		parent::setBearerAuth($access_token);
-//		$stat = parent::httpPost($url, $query, parent::CTYPE_JSON);
-		$stat = parent::httpPost($url, $query);
+		$stat = parent::httpPost($url, $query, parent::CTYPE_JSON);
 		$resp = parent::getResponse();
 
 		return $stat;

@@ -4,6 +4,7 @@ namespace myapp\jp\co\yahoo\staff\tkonuma\yshp\howtoapi\libs;
 
 class ApiRequest
 {
+	const CTYPE_XML = "application/xml";
 	const CTYPE_JSON = "application/json";
 	const CTYPE_MPART_FORMDATA = "multipart/form-data";
 
@@ -56,13 +57,7 @@ class ApiRequest
 	// {{{ protected function httpPost($url, $data, $ctype = null)
 	protected function httpPost($url, $data, $ctype = null)
 	{
-		if ($ctype === null) {
-			$data = http_build_query($data);
-		} elseif ($ctype === $this::CTYPE_JSON) {
-			$data = json_encode($data);
-			$this->custom_headers[] = "Content-Type: application/json";
-		} elseif ($ctype === $this::CTYPE_MPART_FORMDATA) {
-		}
+		$data = $this->convertContentType($data, $ctype);
 
 		$this->req_rawbody = $data;
 		curl_setopt($this->ch, CURLOPT_POST, true);
@@ -76,12 +71,7 @@ class ApiRequest
 	// {{{ protected function httpPut($url, $data, $ctype = null)
 	protected function httpPut($url, $data, $ctype = null)
 	{
-		if ($ctype === null) {
-			$data = http_build_query($data);
-		} elseif ($ctype === $this::CTYPE_JSON) {
-			$data = json_encode($data);
-			$this->custom_headers[] = "Content-Type: application/json";
-		}
+		$data = $this->convertContentType($data, $ctype);
 
 		$this->req_rawbody = $data;
 		curl_setopt($this->ch, CURLOPT_CUSTOMREQUEST, 'PUT');
@@ -99,6 +89,25 @@ class ApiRequest
 		$status = self::httpExecute($url);
 
 		return $status;
+	}
+	// }}}
+
+	// {{{ private function convertContentType($data, $ctype)
+	private function convertContentType($data, $ctype)
+	{
+		if ($ctype === $this::CTYPE_XML) {
+			$data = $this->array2xml($data);
+			$this->custom_headers[] = "Content-Type: " . $this::CTYPE_XML;
+		} else
+		if ($ctype === $this::CTYPE_JSON) {
+			$data = json_encode($data);
+			$this->custom_headers[] = "Content-Type: application/json";
+		} else
+		if ($ctype === $this::CTYPE_MPART_FORMDATA) {
+		} else {
+			$data = http_build_query($data);
+		}
+		return $data;
 	}
 	// }}}
 
@@ -288,6 +297,36 @@ class ApiRequest
 			}
 		}
 		return $string;
+	}
+	// }}}
+
+	// {{{ private function array2xml($array)
+	// how to make xml: https://www.php.net/manual/ja/example.xmlwriter-simple.php
+	private function array2xml($array)
+	{
+		$writer = xmlwriter_open_memory();
+		xmlwriter_set_indent($writer, true);
+		xmlwriter_start_document($writer, '1.0', 'UTF-8');
+		$writer = $this->a2x($array, $writer);
+		xmlwriter_end_document($writer);
+		$xml = xmlwriter_output_memory($writer);
+		return $xml;
+	}
+	// }}}
+
+	// {{{ private function a2x($a, $w)
+	private function a2x($a, $w)
+	{
+		foreach($a as $k => $v) {
+			xmlwriter_start_element($w, $k);
+			if (is_array($v)) {
+				$w = $this->a2x($v, $w);
+			} else {
+				xmlwriter_text($w, $v);
+			}
+			xmlwriter_end_element($w);
+		}
+		return $w;
 	}
 	// }}}
 
