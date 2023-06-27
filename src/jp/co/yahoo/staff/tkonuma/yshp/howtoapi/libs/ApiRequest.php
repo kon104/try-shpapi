@@ -4,9 +4,11 @@ namespace myapp\jp\co\yahoo\staff\tkonuma\yshp\howtoapi\libs;
 
 class ApiRequest
 {
-	const CTYPE_JSON = "json";
+	const CTYPE_JSON = "application/json";
+	const CTYPE_MPART_FORMDATA = "multipart/form-data";
 
 	private $ch;
+	private $custom_headers = array();
 	private $req_url;
 	private $req_header;
 	private $req_rawbody = null;
@@ -37,7 +39,7 @@ class ApiRequest
 	protected function setBearerAuth($access_token)
 	{
 //		curl_setopt($this->ch, CURLOPT_XOAUTH2_BEARER, $access_token);
-		curl_setopt($this->ch, CURLOPT_HTTPHEADER, ["Authorization: Bearer $access_token"]);
+		$this->custom_headers[] = "Authorization: Bearer $access_token";
 	}
 	// }}}
 
@@ -51,44 +53,49 @@ class ApiRequest
 	}
 	// }}}
 
-	// {{{ protected function httpPost($url, $post_data, $ctype = null)
-	protected function httpPost($url, $post_data, $ctype = null)
+	// {{{ protected function httpPost($url, $data, $ctype = null)
+	protected function httpPost($url, $data, $ctype = null)
 	{
 		if ($ctype === null) {
-			$post_data = http_build_query($post_data);
+			$data = http_build_query($data);
 		} elseif ($ctype === $this::CTYPE_JSON) {
-			$post_data = json_encode($post_data);
-//			curl_setopt($this->ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+			$data = json_encode($data);
+			$this->custom_headers[] = "Content-Type: application/json";
+		} elseif ($ctype === $this::CTYPE_MPART_FORMDATA) {
 		}
 
-		$this->req_rawbody = $post_data;
+		$this->req_rawbody = $data;
 		curl_setopt($this->ch, CURLOPT_POST, true);
-		curl_setopt($this->ch, CURLOPT_POSTFIELDS, $post_data);
+		curl_setopt($this->ch, CURLOPT_POSTFIELDS, $data);
 		$status = self::httpExecute($url);
 
 		return $status;
 	}
 	// }}}
 
-	// {{{ protected function httpPut($url, $put_data, $ctype = null)
-	protected function httpPut($url, $put_data, $ctype = null)
+	// {{{ protected function httpPut($url, $data, $ctype = null)
+	protected function httpPut($url, $data, $ctype = null)
 	{
-/*
-		if (gettype($put_data) === "array") {
-			$put_data = http_build_query($put_data);
-		}
-*/
 		if ($ctype === null) {
-			$put_data = http_build_query($put_data);
+			$data = http_build_query($data);
 		} elseif ($ctype === $this::CTYPE_JSON) {
-			$put_data = json_encode($put_data);
-//			curl_setopt($this->ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+			$data = json_encode($data);
+			$this->custom_headers[] = "Content-Type: application/json";
 		}
 
-		$this->req_rawbody = $put_data;
-//		curl_setopt($this->ch, CURLOPT_PUT, true);
+		$this->req_rawbody = $data;
 		curl_setopt($this->ch, CURLOPT_CUSTOMREQUEST, 'PUT');
-		curl_setopt($this->ch, CURLOPT_POSTFIELDS, $put_data);
+		curl_setopt($this->ch, CURLOPT_POSTFIELDS, $data);
+		$status = self::httpExecute($url);
+
+		return $status;
+	}
+	// }}}
+
+	// {{{ protected function httpDelete($url)
+	protected function httpDelete($url)
+	{
+		curl_setopt($this->ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
 		$status = self::httpExecute($url);
 
 		return $status;
@@ -105,6 +112,7 @@ class ApiRequest
 	// {{{ private function httpExecute($url)
 	private function httpExecute($url)
 	{
+		curl_setopt($this->ch, CURLOPT_HTTPHEADER, $this->custom_headers);
 		curl_setopt($this->ch, CURLOPT_URL, $url);
 		$response = curl_exec($this->ch);
 		$res_info = curl_getinfo($this->ch);

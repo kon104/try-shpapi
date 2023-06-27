@@ -9,8 +9,8 @@ class YShoppingController
 {
 	private const MAX_AGE = 60 * 60 * 24;
 
-	// {{{ public function main($GET, $POST, &$pgval, &$resp_dsc, &$resp_axs, &$resp_shp)
-	public function main($GET, $POST, &$pgval, &$resp_dsc, &$resp_axs, &$resp_shp)
+	// {{{ public function main($GET, $POST, $FILES, &$pgval, &$resp_dsc, &$resp_axs, &$resp_shp)
+	public function main($GET, $POST, $FILES, &$pgval, &$resp_dsc, &$resp_axs, &$resp_shp)
 	{
 		$pgval["stage"]		= array_key_exists("stage", $POST) ? $POST["stage"] : null;
 		$pgval["mode"]		= array_key_exists("mode", $POST) ? $POST["mode"] : null;
@@ -36,9 +36,16 @@ class YShoppingController
 		$pgval["query"]			= array_key_exists("query", $POST) ? $POST["query"] : null;
 		$pgval["orderid"]		= array_key_exists("orderid", $POST) ? $POST["orderid"] : null;
 		$pgval["topicid"]		= array_key_exists("topicid", $POST) ? $POST["topicid"] : null;
+		$pgval["completeid"]	= array_key_exists("completeid", $POST) ? $POST["completeid"] : null;
 		$pgval["topic_cat"]		= array_key_exists("topic_cat", $POST) ? $POST["topic_cat"] : null;
 		$pgval["title"]			= array_key_exists("body", $POST) ? $POST["title"] : null;
 		$pgval["body"]			= array_key_exists("body", $POST) ? $POST["body"] : null;
+		$pgval["objectkey"]		= array_key_exists("objectkey", $POST) ? $POST["objectkey"] : null;
+		$pgval["file"]			= array_key_exists("file", $FILES) ?
+									curl_file_create(
+										$FILES["file"]["tmp_name"],
+										$FILES["file"]["type"],
+										$FILES["file"]["name"]) : null;
 
 		$pgval["item_path"]		= array_key_exists("item_path", $POST) ? $POST["item_path"] : null;
 		$pgval["item_name"]		= array_key_exists("item_name", $POST) ? $POST["item_name"] : null;
@@ -86,7 +93,7 @@ class YShoppingController
 			$status = $yshp->prodCategoryList($pgval["access_token"], $pgval["sellerid"], $pgval["query"], $resp_shp);
 		} else
 		if ($pgval["mode"] === YShoppingLib::MODE_TALK_ADD) {
-			$status = $yshp->externalTalkAdd($pgval["access_token"], $pgval["sellerid"], $pgval["topicid"], $pgval["body"], $resp_shp);
+			$status = $yshp->externalTalkAdd($pgval["access_token"], $pgval["sellerid"], $pgval["topicid"], $pgval["body"], $pgval["objectkey"], $resp_shp);
 		} else
 		if ($pgval["mode"] === YShoppingLib::MODE_TALK_DETAIL) {
 			$status = $yshp->externalTalkDetail($pgval["access_token"], $pgval["sellerid"], $pgval["topicid"], $resp_shp);
@@ -96,8 +103,21 @@ class YShoppingController
 		} else
 		if ($pgval["mode"] === YShoppingLib::MODE_TALK_READ) {
 			$status = $yshp->externalTalkRead($pgval["access_token"], $pgval["sellerid"], $pgval["topicid"], $resp_shp);
-
-
+		} else
+		if ($pgval["mode"] === YShoppingLib::MODE_TALK_COMPLETE) {
+			$status = $yshp->externalTalkComplete($pgval["access_token"], $pgval["sellerid"], $pgval["topicid"], $pgval["completeid"], $resp_shp);
+		} else
+		if ($pgval["mode"] === YShoppingLib::MODE_TALK_PRIVATE) {
+			$status = $yshp->externalTalkPrivate($pgval["access_token"], $pgval["sellerid"], $pgval["topicid"], $resp_shp);
+		} else
+		if ($pgval["mode"] === YShoppingLib::MODE_TALK_FILE_ADD) {
+			$status = $yshp->externalTalkFileAdd($pgval["access_token"], $pgval["sellerid"], $pgval["topicid"], $pgval["file"], $resp_shp);
+		} else
+		if ($pgval["mode"] === YShoppingLib::MODE_TALK_FILE_DOWNLOAD) {
+			$status = $yshp->externalTalkFileDownload($pgval["access_token"], $pgval["sellerid"], $pgval["objectkey"], $resp_shp);
+		} else
+		if ($pgval["mode"] === YShoppingLib::MODE_TALK_FILE_DELETE) {
+			$status = $yshp->externalTalkFileDelete($pgval["access_token"], $pgval["sellerid"], $pgval["objectkey"], $resp_shp);
 		} else
 		if ($pgval["mode"] === YShoppingLib::MODE_TALK_NEW_TOPIC) {
 			$status = $yshp->externalStoreTopic($pgval["access_token"], $pgval["sellerid"], $pgval["orderid"], $pgval["topic_cat"], $pgval["title"], $pgval["body"], $resp_shp);
