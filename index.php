@@ -13,15 +13,22 @@
 	$resp_shp = array();
 
 	$ctrl = new YShoppingController();
-	$ctrl->main($_GET, $_POST, $pgval, $resp_dsc, $resp_axs, $resp_shp);
+	$ctrl->main($_GET, $_POST, $_FILES, $pgval, $resp_dsc, $resp_axs, $resp_shp);
 
-	$pgparts_selapi = array(
+	$pgparts_sel_api = array(
 		"api-order" => "注文API",
 		"api-item" => "商品API",
 		"api-stock" => "在庫API",
 		"api-image" => "画像API",
 		"api-product" => "製品/カテゴリ/ブランドAPI",
 		"api-inquiry" => "問い合わせ管理API"
+	);
+	$pgparts_sel_completeid = array(
+		"1" => "通常完了",
+		"2" => "電話完了",
+		"3" => "メール対応",
+		"4" => "同一質問",
+		"5" => "回答不要",
 	);
 	$pgparts_sel_topic_cat = array(
 		"31" => "お支払い（支払い方法の連絡）",
@@ -65,7 +72,7 @@
 
 </ol>
 
-<form method="post" name="frmapi" action="./">
+<form method="post" name="frmapi" action="./" enctype="multipart/form-data">
 
 <h2>Procedure for SHP</h2>
 
@@ -77,7 +84,7 @@
 	<tr>
 		<td><label for="select_api">Select API: </label></td>
 		<td><select id="select_api">
-		<?php foreach ($pgparts_selapi as $key => $val) : ?>
+		<?php foreach ($pgparts_sel_api as $key => $val) : ?>
 			<option value="<?= $key ?>"<?php if ($key === $pgval["api"]) echo " selected"; ?>><?= $val ?></option>
 		<?php endforeach; ?>
 		</select></td>
@@ -94,7 +101,13 @@
 	<tr><td><label for="text_orderid">注文ID: </label></td><td><input type="text" name="orderid" id="text_orderid" value="<?= $pgval["orderid"] ?>"></td>
 		<td></td><td></td></tr>
 	<tr><td><label for="text_topicid">トピックID: </label></td><td><input type="text" name="topicid" id="text_topicid" value="<?= $pgval["topicid"] ?>"></td>
-		<td><label for="text_topic_cat">トピックカテゴリ: </label></td><td><select name="topic_cat" id="text_topic_cat">
+		<td><label for="form_completeid">完了条件: </label></td><td><select name="completeid" id="form_completeid">
+		<?php foreach ($pgparts_sel_completeid as $key => $val) : ?>
+		<?php $key = (string)$key; ?>
+			<option value="<?= $key ?>"<?php if ($key === $pgval["completeid"]) echo " selected"; ?>><?= $val ?></option>
+		<?php endforeach; ?>
+		</select></td></tr>
+	<tr><td><label for="text_topic_cat">トピックカテゴリ: </label></td><td colspan="3"><select name="topic_cat" id="text_topic_cat">
 		<?php foreach ($pgparts_sel_topic_cat as $key => $val) : ?>
 		<?php $key = (string)$key; ?>
 			<option value="<?= $key ?>"<?php if ($key === $pgval["topic_cat"]) echo " selected"; ?>><?= $val ?></option>
@@ -102,6 +115,10 @@
 		</select></td></tr>
 	<tr><td><label for="text_title">タイトル: </label></td><td><input type="text" name="title" id="text_title" value="<?= $pgval["title"] ?>"></td>
 		<td><label for="text_body">本文: </label></td><td><input type="text" name="body" id="text_body" value="<?= $pgval["body"] ?>"></td></tr>
+	<tr><td><label for="form_file">ファイル: </label></td><td colspan="3"><input type="file" name="file" id="form_file" accept=".jpg,.png,.pdf"></td></tr>
+
+	<tr><td><label for="form_objectkey">objectKey: </label></td><td><input type="text" name="objectkey" id="form_objectkey" value="<?= $pgval["objectkey"] ?>"></td>
+		<td></td><td></td></tr>
 
 </table>
 <!-- }}}  -->
@@ -159,12 +176,15 @@
 <!-- {{{ id="api-inquiry" -->
 <div class="apipanel" id="api-inquiry">
 	<ul>
-		<li><?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?><a href="javascript: submitSpecifedMode('<?= YShoppingLib::MODE_TALK_ADD ?>');"><?php endif; ?>メッセージ投稿API<?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?></a><?php endif; ?>：[<label for="text_sellerid">ストア</label>]＋[<label for="text_topicid">トピックID</label>]＋[<label for="text_body">本文</label>]</li>
+		<li><?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?><a href="javascript: submitSpecifedMode('<?= YShoppingLib::MODE_TALK_ADD ?>');"><?php endif; ?>メッセージ投稿API<?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?></a><?php endif; ?>：[<label for="text_sellerid">ストア</label>]＋[<label for="text_topicid">トピックID</label>]＋[<label for="text_body">本文</label>]（任意：＋[<label for="form_objectkey">objectKey</label>]）</li>
 		<li><?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?><a href="javascript: submitSpecifedMode('<?= YShoppingLib::MODE_TALK_DETAIL ?>');"><?php endif; ?>質問詳細API<?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?></a><?php endif; ?>：[<label for="text_sellerid">ストア</label>]＋[<label for="text_topicid">トピックID</label>]</li>
 		<li><?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?><a href="javascript: submitSpecifedMode('<?= YShoppingLib::MODE_TALK_LIST ?>');"><?php endif; ?>質問一覧API<?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?></a><?php endif; ?>：[<label for="text_sellerid">ストア</label>]</li>
-
-		<li>X: <?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?><a href="javascript: submitSpecifedMode('<?= YShoppingLib::MODE_TALK_READ ?>');"><?php endif; ?>既読API<?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?></a><?php endif; ?>：[<label for="text_sellerid">ストア</label>]＋[<label for="text_topicid">トピックID</label>]</li>
-
+		<li><?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?><a href="javascript: submitSpecifedMode('<?= YShoppingLib::MODE_TALK_READ ?>');"><?php endif; ?>既読API<?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?></a><?php endif; ?>：[<label for="text_sellerid">ストア</label>]＋[<label for="text_topicid">トピックID</label>]</li>
+		<li><?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?><a href="javascript: submitSpecifedMode('<?= YShoppingLib::MODE_TALK_COMPLETE ?>');"><?php endif; ?>質問完了API<?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?></a><?php endif; ?>：[<label for="text_sellerid">ストア</label>]＋[<label for="text_topicid">トピックID</label>]＋[<label for="form_completeid">完了条件</label>]</li>
+		<li><?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?><a href="javascript: submitSpecifedMode('<?= YShoppingLib::MODE_TALK_PRIVATE ?>');"><?php endif; ?>非公開API<?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?></a><?php endif; ?>：[<label for="text_sellerid">ストア</label>]＋[<label for="text_topicid">トピックID</label>]</li>
+		<li><?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?><a href="javascript: submitSpecifedMode('<?= YShoppingLib::MODE_TALK_FILE_ADD ?>');"><?php endif; ?>ファイル投稿API<?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?></a><?php endif; ?>：[<label for="text_sellerid">ストア</label>]＋[<label for="text_topicid">トピックID</label>]＋[<label for="form_file">ファイル</label>]</li>
+		<li><?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?><a href="javascript: submitSpecifedMode('<?= YShoppingLib::MODE_TALK_FILE_DOWNLOAD ?>');"><?php endif; ?>ファイル取得API<?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?></a><?php endif; ?>：[<label for="text_sellerid">ストア</label>]＋[<label for="form_objectkey">objectKey</label>]</li>
+		<li><?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?><a href="javascript: submitSpecifedMode('<?= YShoppingLib::MODE_TALK_FILE_DELETE ?>');"><?php endif; ?>ファイル削除API<?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?></a><?php endif; ?>：[<label for="text_sellerid">ストア</label>]＋[<label for="form_objectkey">objectKey</label>]</li>
 		<li><?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?><a href="javascript: submitSpecifedMode('<?= YShoppingLib::MODE_TALK_NEW_TOPIC ?>');"><?php endif; ?>セラー新規問い合わせ投稿API<?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?></a><?php endif; ?>：[<label for="text_sellerid">ストア</label>]＋[<label for="text_orderid"]>注文ID</label>]＋[<label for="text_topic_cat"]>トピックカテゴリ</label>]＋[<label for="text_title">タイトル</label>]＋[<label for="text_body">本文</label>]</li>
 
 	</ul>

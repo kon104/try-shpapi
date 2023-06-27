@@ -27,7 +27,11 @@ class YShoppingLib extends ApiRequest
 	public const MODE_TALK_DETAIL = "shp-talk-detail";
 	public const MODE_TALK_LIST = "shp-talk-list";
 	public const MODE_TALK_READ = "shp-talk-read";
-
+	public const MODE_TALK_COMPLETE = "shp-talk-complete";
+	public const MODE_TALK_PRIVATE = "shp-talk-private";
+	public const MODE_TALK_FILE_ADD = "shp-talk-file-add";
+	public const MODE_TALK_FILE_DOWNLOAD = "shp-talk-file-download";
+	public const MODE_TALK_FILE_DELETE = "shp-talk-file-delete";
 	public const MODE_TALK_NEW_TOPIC = "shp-talk-new-topic";
 
 	private const HOST_SANDBOX = "https://test.circus.shopping.yahooapis.jp";
@@ -48,7 +52,11 @@ class YShoppingLib extends ApiRequest
 	private const PATH_TALK_DETAIL			= "/ShoppingWebService/V1/externalTalkDetail";
 	private const PATH_TALK_LIST			= "/ShoppingWebService/V1/externalTalkList";
 	private const PATH_TALK_READ			= "/ShoppingWebService/V1/externalTalkRead";
-
+	private const PATH_TALK_COMPLETE		= "/ShoppingWebService/V1/externalTalkComplete";
+	private const PATH_TALK_PRIVATE			= "/ShoppingWebService/V1/externalTalkPrivate";
+	private const PATH_TALK_FILE_ADD		= "/ShoppingWebService/V1/externalTalkFileAdd";
+	private const PATH_TALK_FILE_DOWNLOAD	= "/ShoppingWebService/V1/externalTalkFileDownload";
+	private const PATH_TALK_FILE_DELETE		= "/ShoppingWebService/V1/externalTalkFileDelete";
 	private const PATH_TALK_NEW_TOPIC		= "/ShoppingWebService/V1/externalStoreTopic";
 
 	private $stage = null;
@@ -501,8 +509,8 @@ class YShoppingLib extends ApiRequest
 	}
 	// }}}
 
-	// {{{ public function externalTalkAdd($access_token, $sellerid, $topicid, $body, &$resp)
-	public function externalTalkAdd($access_token, $sellerid, $topicid, $body, &$resp)
+	// {{{ public function externalTalkAdd($access_token, $sellerid, $topicid, $body, $objectkey, &$resp)
+	public function externalTalkAdd($access_token, $sellerid, $topicid, $body, $objectkey, &$resp)
 	{
 		$param = array(
 			"topicId" => $topicid,
@@ -512,6 +520,15 @@ class YShoppingLib extends ApiRequest
 			"sellerId" => $sellerid,
 			"body" => $body,
 		);
+		if ($objectkey !== null) {
+			$pathinfo = pathinfo($objectkey);
+			$query["fileList"] = array();
+			$query["fileList"][] = array(
+				"fileName" => $pathinfo["basename"],
+				"filePath" => $objectkey,
+				"fileExt" => $pathinfo["extension"]
+			);
+		}
 
 		$param = http_build_query($param);
 		$url = $this->provideApiUrl(self::PATH_TALK_ADD);
@@ -580,6 +597,115 @@ class YShoppingLib extends ApiRequest
 
 		parent::setBearerAuth($access_token);
 		$stat = parent::httpPut($url, $query, parent::CTYPE_JSON);
+		$resp = parent::getResponse();
+
+		return $stat;
+	}
+	// }}}
+
+	// {{{ public function externalTalkComplete($access_token, $sellerid, $topicid, $completeid, &$resp)
+	public function externalTalkComplete($access_token, $sellerid, $topicid, $completeid, &$resp)
+	{
+		$param = array(
+			"topicId" => $topicid
+		);
+		$query = array(
+			"sellerId" => $sellerid,
+			"completeConditionId" => $completeid
+		);
+
+		$param = http_build_query($param);
+		$url = $this->provideApiUrl(self::PATH_TALK_COMPLETE);
+		$url .= "?" . $param;
+
+		parent::setBearerAuth($access_token);
+		$stat = parent::httpPut($url, $query, parent::CTYPE_JSON);
+		$resp = parent::getResponse();
+
+		return $stat;
+	}
+	// }}}
+
+	// {{{ public function externalTalkPrivate($access_token, $sellerid, $topicid, &$resp)
+	public function externalTalkPrivate($access_token, $sellerid, $topicid, &$resp)
+	{
+		$param = array(
+			"topicId" => $topicid
+		);
+		$query = array(
+			"sellerId" => $sellerid,
+		);
+
+		$param = http_build_query($param);
+		$url = $this->provideApiUrl(self::PATH_TALK_PRIVATE);
+		$url .= "?" . $param;
+
+		parent::setBearerAuth($access_token);
+		$stat = parent::httpPut($url, $query, parent::CTYPE_JSON);
+		$resp = parent::getResponse();
+
+		return $stat;
+	}
+	// }}}
+
+	// {{{ public function externalTalkFileAdd($access_token, $sellerid, $topicid, $file, &$resp)
+	public function externalTalkFileAdd($access_token, $sellerid, $topicid, $file, &$resp)
+	{
+		$param = array(
+			"sellerId" => $sellerid,
+			"topicId" => $topicid,
+		);
+
+		$query = array(
+			"file" => $file,
+		);
+
+		$param = http_build_query($param);
+		$url = $this->provideApiUrl(self::PATH_TALK_FILE_ADD);
+		$url .= "?" . $param;
+
+		parent::setBearerAuth($access_token);
+		$stat = parent::httpPost($url, $query, parent::CTYPE_MPART_FORMDATA);
+		$resp = parent::getResponse();
+
+		return $stat;
+	}
+	// }}}
+
+	// {{{ public function externalTalkFileDownload($access_token, $sellerid, $objectkey, &$resp)
+	public function externalTalkFileDownload($access_token, $sellerid, $objectkey, &$resp)
+	{
+		$param = array(
+			"sellerId" => $sellerid,
+			"key" => $objectkey,
+		);
+
+		$param = http_build_query($param);
+		$url = $this->provideApiUrl(self::PATH_TALK_FILE_DOWNLOAD);
+		$url .= "?" . $param;
+
+		parent::setBearerAuth($access_token);
+		$stat = parent::httpGet($url);
+		$resp = parent::getResponse();
+
+		return $stat;
+	}
+	// }}}
+
+	// {{{ public function externalTalkFileDelete($access_token, $sellerid, $objectkey, &$resp)
+	public function externalTalkFileDelete($access_token, $sellerid, $objectkey, &$resp)
+	{
+		$param = array(
+			"sellerId" => $sellerid,
+			"key" => $objectkey,
+		);
+
+		$param = http_build_query($param);
+		$url = $this->provideApiUrl(self::PATH_TALK_FILE_DELETE);
+		$url .= "?" . $param;
+
+		parent::setBearerAuth($access_token);
+		$stat = parent::httpDelete($url);
 		$resp = parent::getResponse();
 
 		return $stat;
