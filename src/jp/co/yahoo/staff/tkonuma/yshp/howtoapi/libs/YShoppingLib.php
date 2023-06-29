@@ -305,17 +305,17 @@ class YShoppingLib extends ApiRequest
 	}
 	// }}}
 
-	// {{{ public function editItem($access_token, $sellerid, &$resp)
-	public function editItem($access_token, $sellerid, $item_code, $path, $name, $price, &$resp)
+	// {{{ public function editItem($access_token, $sellerid, $code, $path, $name, $pcat, $price, &$resp)
+	public function editItem($access_token, $sellerid, $code, $path, $name, $pcat, $price, &$resp)
 	{
 		$query = array(
 			"seller_id" => $sellerid,
-			"item_code" => $item_code,
+			"item_code" => $code,
 			"path" => $path,
 			"name" => $name,
+			"product_category" => $pcat,
 			"price" => $price
 		);
-		$query = http_build_query($query);
 		$url = $this->provideApiUrl(self::PATH_ITEM_EDIT);
 
 		parent::setBearerAuth($access_token);
@@ -347,13 +347,12 @@ class YShoppingLib extends ApiRequest
 	// }}}
 
 	// {{{ public function submitItem($access_token, $sellerid, $code, &$resp)
-	public function submitItem($access_token, $sellerid, $item_code, &$resp)
+	public function submitItem($access_token, $sellerid, $code, &$resp)
 	{
 		$query = array(
 			"seller_id" => $sellerid,
-			"item_code" => $item_code
+			"item_code" => $code
 		);
-		$query = http_build_query($query);
 		$url = $this->provideApiUrl(self::PATH_ITEM_SUBMIT);
 
 		parent::setBearerAuth($access_token);
