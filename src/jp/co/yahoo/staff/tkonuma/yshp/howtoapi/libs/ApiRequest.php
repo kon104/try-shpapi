@@ -101,7 +101,7 @@ class ApiRequest
 		} else
 		if ($ctype === $this::CTYPE_JSON) {
 			$data = json_encode($data);
-			$this->custom_headers[] = "Content-Type: application/json";
+			$this->custom_headers[] = "Content-Type: application/json; charset=UTF-8";
 		} else
 		if ($ctype === $this::CTYPE_MPART_FORMDATA) {
 		} else {

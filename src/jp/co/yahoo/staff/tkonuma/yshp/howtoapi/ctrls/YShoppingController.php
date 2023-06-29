@@ -31,7 +31,6 @@ class YShoppingController
 
 		$pgval["api"]			= array_key_exists("api", $POST) ? $POST["api"] : null;
 		$pgval["sellerid"]		= array_key_exists("sellerid", $POST) ? $POST["sellerid"] : null;
-		$pgval["item_code"]		= array_key_exists("item_code", $POST) ? $POST["item_code"] : null;
 		$pgval["stcat_key"]		= array_key_exists("stcat_key", $POST) ? $POST["stcat_key"] : null;
 		$pgval["query"]			= array_key_exists("query", $POST) ? $POST["query"] : null;
 		$pgval["orderid"]		= array_key_exists("orderid", $POST) ? $POST["orderid"] : null;
@@ -47,8 +46,10 @@ class YShoppingController
 										$FILES["file"]["type"],
 										$FILES["file"]["name"]) : null;
 
+		$pgval["item_code"]		= array_key_exists("item_code", $POST) ? $POST["item_code"] : null;
 		$pgval["item_path"]		= array_key_exists("item_path", $POST) ? $POST["item_path"] : null;
 		$pgval["item_name"]		= array_key_exists("item_name", $POST) ? $POST["item_name"] : null;
+		$pgval["item_pcat"]		= array_key_exists("item_pcat", $POST) ? $POST["item_pcat"] : null;
 		$pgval["item_price"]	= array_key_exists("item_price", $POST) ? $POST["item_price"] : null;
 
 		$ycon = new YConnectLib($pgval["indent"]);
@@ -69,7 +70,7 @@ class YShoppingController
 			$status = $yshp->orderInfo($pgval["access_token"], $pgval["sellerid"], $pgval["orderid"], $pgval["mode"], $resp_shp);
 		} else
 		if ($pgval["mode"] === YShoppingLib::MODE_ITEM_EDIT) {
-			$status = $yshp->editItem($pgval["access_token"], $pgval["sellerid"], $pgval["item_code"], $pgval["item_path"], $pgval["item_name"], $pgval["item_price"], $resp_shp);
+			$status = $yshp->editItem($pgval["access_token"], $pgval["sellerid"], $pgval["item_code"], $pgval["item_path"], $pgval["item_name"], $pgval["item_pcat"], $pgval["item_price"], $resp_shp);
 		} else
 		if ($pgval["mode"] === YShoppingLib::MODE_ITEM_GET) {
 			$status = $yshp->getItem($pgval["access_token"], $pgval["sellerid"], $pgval["item_code"], $resp_shp);

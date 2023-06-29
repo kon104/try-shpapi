@@ -54,6 +54,9 @@
 .tokentxt {
 	width: 450px;
 }
+td {
+	white-space: nowrap;
+}
 </style>
 </head>
 <body>
@@ -93,8 +96,9 @@
 	<tr><td><label for="text_sellerid">ストアアカウント: </label></td><td><input type="text" name="sellerid" id="text_sellerid" value="<?= $pgval["sellerid"] ?>"></td>
 		<td></td><td></td></tr>
 	<tr><td><label for="text_item_code">商品コード: </label></td><td><input type="text" name="item_code" id="text_item_code" value="<?= $pgval["item_code"] ?>"></td>
-		<td><label for="text_item_path">カテゴリパス: </label></td><td><input type="text" name="item_path" id="text_item_path" value="<?= $pgval["item_path"] ?>"></td></tr>
-	<tr><td><label for="text_item_name">商品名: </label></td><td><input type="text" name="item_name" id="text_item_name" value="<?= $pgval["item_name"] ?>"></td>
+		<td><label for="text_item_path">カテゴリパス: </label></td><td><input type="text" name="item_path" id="text_item_path" value="<?= $pgval["item_path"] ?>"></td>
+		<td><label for="text_item_name">商品名: </label></td><td><input type="text" name="item_name" id="text_item_name" value="<?= $pgval["item_name"] ?>"></td></tr>
+	<tr><td><label for="form_item_pcat">プロダクトカテゴリ: </label></td><td><input type="text" name="item_pcat" id="form_item_pcat" value="<?= $pgval["item_pcat"] ?>"></td>
 		<td><label for="text_item_price">通常販売価格: </label></td><td><input type="text" name="item_price" id="text_item_price" value="<?= $pgval["item_price"] ?>"></td></tr>
 	<tr><td><label for="text_stcat_key">カテゴリページのキー: </label></td><td><input type="text" name="stcat_key" id="text_stcat_key" value="<?= $pgval["stcat_key"] ?>"></td>
 		<td><label for="text_query">検索文字列: </label></td><td><input type="text" name="query" id="text_query" value="<?= $pgval["query"] ?>"></td></tr>
@@ -138,7 +142,7 @@
 <!-- {{{ id="api-item" -->
 <div class="apipanel" id="api-item">
 	<ul>
-		<li><?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?><a href="javascript: submitSpecifedMode('<?= YShoppingLib::MODE_ITEM_EDIT ?>');"><?php endif; ?>商品登録API<?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?></a><?php endif; ?>：[<label for="text_sellerid">ストア</label>]＋[<label for="text_item_code">商品コード</label>]＋[<label for="text_item_path">カテゴリパス</label>]＋[<label for="text_item_name">商品名</label>]＋[<label for="text_item_price">通常販売価格</label>]</li>
+		<li><?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?><a href="javascript: submitSpecifedMode('<?= YShoppingLib::MODE_ITEM_EDIT ?>');"><?php endif; ?>商品登録API<?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?></a><?php endif; ?>：[<label for="text_sellerid">ストア</label>]＋[<label for="text_item_code">商品コード</label>]＋[<label for="text_item_path">カテゴリパス</label>]＋[<label for="text_item_name">商品名</label>]＋[<label for="form_item_pcat">プロカテ</label>]＋[<label for="text_item_price">通常販売価格</label>]</li>
 		<li><?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?><a href="javascript: submitSpecifedMode('<?= YShoppingLib::MODE_ITEM_GET ?>');"><?php endif; ?>商品参照API<?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?></a><?php endif; ?>：[<label for="text_sellerid">ストア</label>]＋[<label for="text_item_code">商品コード</label>]</li>
 		<li><?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?><a href="javascript: submitSpecifedMode('<?= YShoppingLib::MODE_ITEM_SUBMIT ?>');"><?php endif; ?>商品個別反映API<?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?></a><?php endif; ?>：[<label for="text_sellerid">ストア</label>]＋[<label for="text_item_code">商品コード</label>]</li>
 		<li><?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?><a href="javascript: submitSpecifedMode('<?= YShoppingLib::MODE_MY_ITEM_LIST ?>');"><?php endif; ?>商品リストAPI<?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?></a><?php endif; ?>：[<label for="text_sellerid">ストア</label>]＋ ( [<label for="text_stcat_key">カテゴリページのキー</label>] or [<label for="text_query">検索文字列</label>] )</li>
