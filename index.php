@@ -68,7 +68,7 @@ td {
 <ol>
 	<li><a href="./">Reset this page</a></li>
 	<li><a href="https://e.developer.yahoo.co.jp/dashboard/" target="_blank" rel="noopener noreferrer">Look at ids in YJDN Management Apps</a></li>
-	<li><form method="post" name="frmid" action="./"><input type="hidden" name="mode" value="<?= YConnectLib::MODE_SETID ?>">Create Auth URL. <label for="text_clientid">Client id: </label><input type="text" name="clientid" id="text_clientid" value="<?= $pgval["client_id"] ?>"> & <label for="text_secret">Secret: </label><input type="text" name="secret" id="text_secret" value="<?= $pgval["secret"] ?>"><input type="submit"></form></li>
+	<li><form method="post" name="frmid" action="./"><input type="hidden" name="mode" value="<?= YConnectLib::MODE_SETID ?>">Create Auth URL. <label for="text_clientid">Client id: </label><input type="text" name="clientid" id="text_clientid" value="<?= $pgval["clientid"] ?>"> & <label for="text_secret">Secret: </label><input type="text" name="secret" id="text_secret" value="<?= $pgval["secret"] ?>"><input type="submit"></form></li>
 	<li><?php if (!FeLib::empty($pgval["authorization_url"])) : ?><a href="<?= $pgval["authorization_url"] ?>"><?php endif; ?>Request User Auth<?php if (!FeLib::empty($pgval["authorization_url"])) : ?></a><?php endif; ?></li>
 	<li><?php if (!FeLib::empty($pgval["code"])) : ?><a href="javascript: submitSpecifedMode('<?= YConnectLib::MODE_ACTOKEN ?>');"><?php endif; ?>Request Access Token<?php if (!FeLib::empty($pgval["code"])) : ?></a><?php endif; ?></li>
 	<li><?php if (!FeLib::empty($pgval["access_token"])) : ?><a href="javascript: submitSpecifedMode('<?= YConnectLib::MODE_REFRESH ?>');"><?php endif; ?>Refresh Access Token<?php if (!FeLib::empty($pgval["access_token"])) : ?></a><?php endif; ?></li>
@@ -209,7 +209,7 @@ td {
 </table>
 
 <input type="hidden" name="mode" id="mode" value="">
-<input type="hidden" name="clientid" value="<?= $pgval["client_id"] ?>">
+<input type="hidden" name="clientid" value="<?= $pgval["clientid"] ?>">
 <input type="hidden" name="secret" value="<?= $pgval["secret"] ?>">
 <input type="hidden" name="nonce" value="<?= $pgval["nonce"] ?>">
 <input type="hidden" name="code" value="<?= $pgval["code"] ?>">
