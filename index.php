@@ -17,6 +17,7 @@
 
 	$pgparts_sel_api = array(
 		"api-order" => "注文API",
+		"api-subsc" => "定期購入API",
 		"api-item" => "商品API",
 		"api-stock" => "在庫API",
 		"api-image" => "画像API",
@@ -135,6 +136,15 @@ td {
 		<li><?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?><a href="javascript: submitSpecifedMode('<?= YShoppingLib::MODE_ORD_INFO ?>');"><?php endif; ?>注文詳細API<?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?></a><?php endif; ?>：[<label for="text_sellerid">ストア</label>]＋[<label for="text_orderid">注文ID</label>]（type of node：注文）</li>
 		<li><?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?><a href="javascript: submitSpecifedMode('<?= YShoppingLib::MODE_ORD_INFO_SHIP ?>');"><?php endif; ?>注文詳細API<?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?></a><?php endif; ?>：[<label for="text_sellerid">ストア</label>]＋[<label for="text_orderid">注文ID</label>]（type of node：注文＋請求＋配送）</li>
 		<li><?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?><a href="javascript: submitSpecifedMode('<?= YShoppingLib::MODE_ORD_INFO_DETAIL ?>');"><?php endif; ?>注文詳細API<?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?></a><?php endif; ?>：[<label for="text_sellerid">ストア</label>]＋[<label for="text_orderid">注文ID</label>]（type of node：注文＋明細＋商品＋セラー＋バイヤー）</li>
+	</ul>
+</div>
+<!-- }}} -->
+
+<!-- {{{ id="api-subsc" -->
+<div class="apipanel" id="api-subsc">
+	<ul>
+		<li><?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?><a href="javascript: submitSpecifedMode('<?= YShoppingLib::MODE_SUBSC_LIST ?>');"><?php endif; ?>定期購入親注文一覧取得API<?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?></a><?php endif; ?>：[<label for="text_sellerid">ストア</label>]</li>
+
 	</ul>
 </div>
 <!-- }}} -->

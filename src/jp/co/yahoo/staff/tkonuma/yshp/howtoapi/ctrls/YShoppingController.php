@@ -31,6 +31,9 @@ class YShoppingController
 		    ($pgval["mode"] === YShoppingLib::MODE_ORD_INFO_DETAIL)) {
 			$status = $yshp->orderInfo($pgval["access_token"], $pgval["sellerid"], $pgval["orderid"], $pgval["mode"], $resp_shp);
 		} else
+		if ($pgval["mode"] === YShoppingLib::MODE_SUBSC_LIST) {
+			$status = $yshp->subscriptionList($pgval["access_token"], $pgval["sellerid"], $resp_shp);
+		} else
 		if ($pgval["mode"] === YShoppingLib::MODE_ITEM_EDIT) {
 			$status = $yshp->editItem($pgval["access_token"], $pgval["sellerid"], $pgval["item_code"], $pgval["item_path"], $pgval["item_name"], $pgval["item_pcat"], $pgval["item_price"], $resp_shp);
 		} else

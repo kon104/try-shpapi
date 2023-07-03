@@ -15,6 +15,7 @@ class YShoppingLib extends ApiRequest
 	public const MODE_ORD_INFO = "shp-ord-info";
 	public const MODE_ORD_INFO_SHIP = "shp-ord-info-ship";
 	public const MODE_ORD_INFO_DETAIL = "shp-ord-info-detail";
+	public const MODE_SUBSC_LIST = "shp-subsc-list";
 	public const MODE_ITEM_EDIT = "shp-item-edit";
 	public const MODE_ITEM_GET = "shp-item-get";
 	public const MODE_ITEM_SUBMIT = "shp-item-submit";
@@ -40,6 +41,7 @@ class YShoppingLib extends ApiRequest
 	private const PATH_ORDER_COUNT			= "/ShoppingWebService/V1/orderCount";
 	private const PATH_ORDER_LIST			= "/ShoppingWebService/V1/orderList";
 	private const PATH_ORDER_INFO			= "/ShoppingWebService/V1/orderInfo";
+	private const PATH_SUBSC_LIST			= "/ShoppingWebService/V1/subscription/order/origin/list";
 	private const PATH_ITEM_EDIT			= "/ShoppingWebService/V1/editItem";
 	private const PATH_ITEM_GET				= "/ShoppingWebService/V1/getItem";
 	private const PATH_ITEM_SUBMIT			= "/ShoppingWebService/V1/submitItem";
@@ -302,6 +304,23 @@ class YShoppingLib extends ApiRequest
 		. "IsLogin,FspLicenseCode,FspLicenseName,GuestAuthId";
 
 		return $fields;
+	}
+	// }}}
+
+	// {{{ public function subscriptionList($access_token, $sellerid, &$resp)
+	public function subscriptionList($access_token, $sellerid, &$resp)
+	{
+		$query = array(
+			"sellerId" => $sellerid
+		);
+
+		$url = $this->provideApiUrl(self::PATH_SUBSC_LIST);
+
+		parent::setBearerAuth($access_token);
+		$stat = parent::httpPost($url, $query, parent::CTYPE_JSON);
+		$resp = parent::getResponse();
+
+		return $stat;
 	}
 	// }}}
 
