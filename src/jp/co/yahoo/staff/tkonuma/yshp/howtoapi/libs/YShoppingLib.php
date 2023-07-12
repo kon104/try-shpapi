@@ -11,11 +11,14 @@ class YShoppingLib extends ApiRequest
 	public const STAGE_PRODUCT = "production";
 
 	public const MODE_ORD_STAT_COUNT = "shp-ord-statcnt";
-	public const MODE_ORD_LIST = "shp-ord-list";
+	public const MODE_ORD_LIST_PAST_1M = "shp-ord-list-past1m";
+	public const MODE_ORD_LIST_ORDERID = "shp-ord-list-orderid";
 	public const MODE_ORD_INFO = "shp-ord-info";
 	public const MODE_ORD_INFO_SHIP = "shp-ord-info-ship";
 	public const MODE_ORD_INFO_DETAIL = "shp-ord-info-detail";
 	public const MODE_SUBSC_LIST = "shp-subsc-list";
+	public const MODE_SUBSC_REPL_LIST = "shp-subsc-repl-list";
+	public const MODE_SUBSC_DETAIL = "shp-subsc-detail";
 	public const MODE_ITEM_EDIT = "shp-item-edit";
 	public const MODE_ITEM_GET = "shp-item-get";
 	public const MODE_ITEM_SUBMIT = "shp-item-submit";
@@ -42,6 +45,8 @@ class YShoppingLib extends ApiRequest
 	private const PATH_ORDER_LIST			= "/ShoppingWebService/V1/orderList";
 	private const PATH_ORDER_INFO			= "/ShoppingWebService/V1/orderInfo";
 	private const PATH_SUBSC_LIST			= "/ShoppingWebService/V1/subscription/order/origin/list";
+	private const PATH_SUBSC_REPL_LIST		= "/ShoppingWebService/V1/subscription/order/origin/%s/replica/list";
+	private const PATH_SUBSC_DETAIL			= "/ShoppingWebService/V1/subscription/order/origin/%s";
 	private const PATH_ITEM_EDIT			= "/ShoppingWebService/V1/editItem";
 	private const PATH_ITEM_GET				= "/ShoppingWebService/V1/getItem";
 	private const PATH_ITEM_SUBMIT			= "/ShoppingWebService/V1/submitItem";
@@ -100,10 +105,11 @@ class YShoppingLib extends ApiRequest
 	}
 	// }}}
 
-	// {{{ public function orderList($access_token, $sellerid, &$resp)
-	public function orderList($access_token, $sellerid, &$resp)
+	// {{{ public function orderListPast1M($access_token, $sellerid, &$resp)
+	public function orderListPast1M($access_token, $sellerid, &$resp)
 	{
 		$pastymd = date("Ymd000000", strtotime("-1 month"));
+		$field = "OrderId,Version,IsSeen,OrderTime,OrderStatus,PayStatus,SettleStatus,ShipStatus";
 
 		$xml = array(
 			"Req" => array(
@@ -113,7 +119,39 @@ class YShoppingLib extends ApiRequest
 						"SellerId" => $sellerid,
 						"OrderTimeFrom" => $pastymd
 					),
-					"Field" => "OrderId,Version,IsSeen,OrderTime,OrderStatus,PayStatus,SettleStatus,ShipStatus"
+					"Field" => $field
+				),
+				"SellerId" => $sellerid
+			)
+		);
+
+		$url = $this->provideApiUrl(self::PATH_ORDER_LIST);
+
+		parent::setBearerAuth($access_token);
+		$stat = parent::httpPost($url, $xml, parent::CTYPE_XML);
+		$resp = parent::getResponse();
+
+		return $stat;
+	}
+	// }}}
+
+	// {{{ public function orderListOrderId($access_token, $sellerid, $orderid, &$resp)
+	public function orderListOrderId($access_token, $sellerid, $orderid, &$resp)
+	{
+//		$pastymd = date("Ymd000000", strtotime("-1 month"));
+		$field = "OrderId,Version,IsSeen,OrderTime,OrderStatus,PayStatus,SettleStatus,ShipStatus";
+		$field .= ",TotalPrice,RefundTotalPrice";
+
+		$xml = array(
+			"Req" => array(
+				"Search" => array(
+					"Sort" => "-order_time",
+					"Condition" => array(
+						"OrderId" => $orderid,
+						"SellerId" => $sellerid,
+//						"OrderTimeFrom" => $pastymd
+					),
+					"Field" => $field
 				),
 				"SellerId" => $sellerid
 			)
@@ -318,6 +356,46 @@ class YShoppingLib extends ApiRequest
 
 		parent::setBearerAuth($access_token);
 		$stat = parent::httpPost($url, $query, parent::CTYPE_JSON);
+		$resp = parent::getResponse();
+
+		return $stat;
+	}
+	// }}}
+
+	// {{{ public function subscriptionReplicaList($access_token, $sellerid, $subsc_repl_id, &$resp)
+	public function subscriptionReplicaList($access_token, $sellerid, $subsc_repl_id, &$resp)
+	{
+		$param = array(
+			"sellerId" => $sellerid,
+		);
+
+		$param = http_build_query($param);
+		$url = sprintf(self::PATH_SUBSC_REPL_LIST, $subsc_repl_id);
+		$url = $this->provideApiUrl($url);
+		$url .= "?" . $param;
+
+		parent::setBearerAuth($access_token);
+		$stat = parent::httpGet($url);
+		$resp = parent::getResponse();
+
+		return $stat;
+	}
+	// }}}
+
+	// {{{ public function subscriptionDetail($access_token, $sellerid, $subsc_repl_id, &$resp)
+	public function subscriptionDetail($access_token, $sellerid, $subsc_repl_id, &$resp)
+	{
+		$param = array(
+			"sellerId" => $sellerid,
+		);
+
+		$param = http_build_query($param);
+		$url = sprintf(self::PATH_SUBSC_DETAIL, $subsc_repl_id);
+		$url = $this->provideApiUrl($url);
+		$url .= "?" . $param;
+
+		parent::setBearerAuth($access_token);
+		$stat = parent::httpGet($url);
 		$resp = parent::getResponse();
 
 		return $stat;

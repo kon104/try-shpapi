@@ -23,8 +23,11 @@ class YShoppingController
 		if ($pgval["mode"] === YShoppingLib::MODE_ORD_STAT_COUNT) {
 			$status = $yshp->orderCount($pgval["access_token"], $pgval["sellerid"], $resp_shp);
 		} else
-		if ($pgval["mode"] === YShoppingLib::MODE_ORD_LIST) {
-			$status = $yshp->orderList($pgval["access_token"], $pgval["sellerid"], $resp_shp);
+		if ($pgval["mode"] === YShoppingLib::MODE_ORD_LIST_PAST_1M) {
+			$status = $yshp->orderListPast1M($pgval["access_token"], $pgval["sellerid"], $resp_shp);
+		} else
+		if ($pgval["mode"] === YShoppingLib::MODE_ORD_LIST_ORDERID) {
+			$status = $yshp->orderListOrderId($pgval["access_token"], $pgval["sellerid"], $pgval["orderid"], $resp_shp);
 		} else
 		if (($pgval["mode"] === YShoppingLib::MODE_ORD_INFO) ||
 		    ($pgval["mode"] === YShoppingLib::MODE_ORD_INFO_SHIP) ||
@@ -33,6 +36,12 @@ class YShoppingController
 		} else
 		if ($pgval["mode"] === YShoppingLib::MODE_SUBSC_LIST) {
 			$status = $yshp->subscriptionList($pgval["access_token"], $pgval["sellerid"], $resp_shp);
+		} else
+		if ($pgval["mode"] === YShoppingLib::MODE_SUBSC_REPL_LIST) {
+			$status = $yshp->subscriptionReplicaList($pgval["access_token"], $pgval["sellerid"], $pgval["subsc_repl_id"], $resp_shp);
+		} else
+		if ($pgval["mode"] === YShoppingLib::MODE_SUBSC_DETAIL) {
+			$status = $yshp->subscriptionDetail($pgval["access_token"], $pgval["sellerid"], $pgval["subsc_repl_id"], $resp_shp);
 		} else
 		if ($pgval["mode"] === YShoppingLib::MODE_ITEM_EDIT) {
 			$status = $yshp->editItem($pgval["access_token"], $pgval["sellerid"], $pgval["item_code"], $pgval["item_path"], $pgval["item_name"], $pgval["item_pcat"], $pgval["item_price"], $resp_shp);
@@ -161,6 +170,8 @@ class YShoppingController
 		$pgval["item_name"]		= $this->pickupParamVal("item_name", $POST);
 		$pgval["item_pcat"]		= $this->pickupParamVal("item_pcat", $POST);
 		$pgval["item_price"]	= $this->pickupParamVal("item_price", $POST);
+
+		$pgval["subsc_repl_id"]	= $this->pickupParamVal("subsc_repl_id", $POST);
 
 		return $pgval;
 	}
