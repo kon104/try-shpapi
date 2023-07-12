@@ -12,45 +12,7 @@ class YShoppingController
 	// {{{ public function main($GET, $POST, $FILES, &$pgval, &$resp_dsc, &$resp_axs, &$resp_shp)
 	public function main($GET, $POST, $FILES, &$pgval, &$resp_dsc, &$resp_axs, &$resp_shp)
 	{
-		$pgval["stage"]		= array_key_exists("stage", $POST) ? $POST["stage"] : null;
-		$pgval["mode"]		= array_key_exists("mode", $POST) ? $POST["mode"] : null;
-		$pgval["indent"]	= array_key_exists("indent", $POST) ? $POST["indent"] : null;
-		$pgval["client_id"]	= array_key_exists("clientid", $POST) ? $POST["clientid"] : null;
-		$pgval["secret"]	= array_key_exists("secret", $POST) ? $POST["secret"] : null;
-		$pgval["nonce"]		= null;
-		$pgval["code"]		= array_key_exists("code", $GET) ? $GET["code"] : null;
-		if (is_null($pgval["code"])) {
-			$pgval["code"]	= array_key_exists("code", $POST) ? $POST["code"] : null;
-		}
-		$pgval["access_token"]	= array_key_exists("access_token", $POST) ? $POST["access_token"] : null;
-		$pgval["token_type"]	= array_key_exists("token_type", $POST) ? $POST["token_type"] : null;
-		$pgval["refresh_token"]	= array_key_exists("refresh_token", $POST) ? $POST["refresh_token"] : null;
-		$pgval["expires_in"]	= array_key_exists("expires_in", $POST) ? $POST["expires_in"] : null;
-		$pgval["id_token"]		= array_key_exists("id_token", $POST) ? $POST["id_token"] : null;
-		$pgval["cmd_curl"]		= array_key_exists("cmd_curl", $POST) ? $POST["cmd_curl"] : null;
-
-		$pgval["api"]			= array_key_exists("api", $POST) ? $POST["api"] : null;
-		$pgval["sellerid"]		= array_key_exists("sellerid", $POST) ? $POST["sellerid"] : null;
-		$pgval["stcat_key"]		= array_key_exists("stcat_key", $POST) ? $POST["stcat_key"] : null;
-		$pgval["query"]			= array_key_exists("query", $POST) ? $POST["query"] : null;
-		$pgval["orderid"]		= array_key_exists("orderid", $POST) ? $POST["orderid"] : null;
-		$pgval["topicid"]		= array_key_exists("topicid", $POST) ? $POST["topicid"] : null;
-		$pgval["completeid"]	= array_key_exists("completeid", $POST) ? $POST["completeid"] : null;
-		$pgval["topic_cat"]		= array_key_exists("topic_cat", $POST) ? $POST["topic_cat"] : null;
-		$pgval["title"]			= array_key_exists("body", $POST) ? $POST["title"] : null;
-		$pgval["body"]			= array_key_exists("body", $POST) ? $POST["body"] : null;
-		$pgval["objectkey"]		= array_key_exists("objectkey", $POST) ? $POST["objectkey"] : null;
-		$pgval["file"]			= array_key_exists("file", $FILES) ?
-									curl_file_create(
-										$FILES["file"]["tmp_name"],
-										$FILES["file"]["type"],
-										$FILES["file"]["name"]) : null;
-
-		$pgval["item_code"]		= array_key_exists("item_code", $POST) ? $POST["item_code"] : null;
-		$pgval["item_path"]		= array_key_exists("item_path", $POST) ? $POST["item_path"] : null;
-		$pgval["item_name"]		= array_key_exists("item_name", $POST) ? $POST["item_name"] : null;
-		$pgval["item_pcat"]		= array_key_exists("item_pcat", $POST) ? $POST["item_pcat"] : null;
-		$pgval["item_price"]	= array_key_exists("item_price", $POST) ? $POST["item_price"] : null;
+		$pgval = $this->createPageValue($GET, $POST, $FILES, $pgval);
 
 		$ycon = new YConnectLib($pgval["indent"]);
 		$yshp = new YShoppingLib($pgval["indent"]);
@@ -61,13 +23,25 @@ class YShoppingController
 		if ($pgval["mode"] === YShoppingLib::MODE_ORD_STAT_COUNT) {
 			$status = $yshp->orderCount($pgval["access_token"], $pgval["sellerid"], $resp_shp);
 		} else
-		if ($pgval["mode"] === YShoppingLib::MODE_ORD_LIST) {
-			$status = $yshp->orderList($pgval["access_token"], $pgval["sellerid"], $resp_shp);
+		if ($pgval["mode"] === YShoppingLib::MODE_ORD_LIST_PAST_1M) {
+			$status = $yshp->orderListPast1M($pgval["access_token"], $pgval["sellerid"], $resp_shp);
+		} else
+		if ($pgval["mode"] === YShoppingLib::MODE_ORD_LIST_ORDERID) {
+			$status = $yshp->orderListOrderId($pgval["access_token"], $pgval["sellerid"], $pgval["orderid"], $resp_shp);
 		} else
 		if (($pgval["mode"] === YShoppingLib::MODE_ORD_INFO) ||
 		    ($pgval["mode"] === YShoppingLib::MODE_ORD_INFO_SHIP) ||
 		    ($pgval["mode"] === YShoppingLib::MODE_ORD_INFO_DETAIL)) {
 			$status = $yshp->orderInfo($pgval["access_token"], $pgval["sellerid"], $pgval["orderid"], $pgval["mode"], $resp_shp);
+		} else
+		if ($pgval["mode"] === YShoppingLib::MODE_SUBSC_LIST) {
+			$status = $yshp->subscriptionList($pgval["access_token"], $pgval["sellerid"], $resp_shp);
+		} else
+		if ($pgval["mode"] === YShoppingLib::MODE_SUBSC_REPL_LIST) {
+			$status = $yshp->subscriptionReplicaList($pgval["access_token"], $pgval["sellerid"], $pgval["subsc_repl_id"], $resp_shp);
+		} else
+		if ($pgval["mode"] === YShoppingLib::MODE_SUBSC_DETAIL) {
+			$status = $yshp->subscriptionDetail($pgval["access_token"], $pgval["sellerid"], $pgval["subsc_repl_id"], $resp_shp);
 		} else
 		if ($pgval["mode"] === YShoppingLib::MODE_ITEM_EDIT) {
 			$status = $yshp->editItem($pgval["access_token"], $pgval["sellerid"], $pgval["item_code"], $pgval["item_path"], $pgval["item_name"], $pgval["item_pcat"], $pgval["item_price"], $resp_shp);
@@ -127,11 +101,11 @@ class YShoppingController
 			if ($pgval["mode"] === YConnectLib::MODE_SETID) {
 				$pgval["nonce"] = YConnectLib::generateNonce();
 				$_SESSION["nonce"] = $pgval["nonce"];
-				$_SESSION["client_id"] = $pgval["client_id"];
+				$_SESSION["clientid"] = $pgval["clientid"];
 				$_SESSION["secret"] = $pgval["secret"];
 			} else
 			if ($pgval["mode"] === YConnectLib::MODE_ACTOKEN) {
-				$status = $ycon->generateAccessToken($pgval["client_id"], $pgval["secret"], $pgval["code"], $resp_axs);
+				$status = $ycon->generateAccessToken($pgval["clientid"], $pgval["secret"], $pgval["code"], $resp_axs);
 				$pgval["access_token"] = $resp_axs["res"]["body"]->access_token;
 				$pgval["token_type"] = $resp_axs["res"]["body"]->token_type;
 				$pgval["refresh_token"] = $resp_axs["res"]["body"]->refresh_token;
@@ -140,20 +114,91 @@ class YShoppingController
 				$pgval["cmd_curl"] = $ycon->makeCurlCommand($pgval["access_token"]);
 			} else
 			if ($pgval["mode"] === YConnectLib::MODE_REFRESH) {
-				$status = $ycon->refreshAccessToken($pgval["client_id"], $pgval["secret"], $pgval["refresh_token"], $resp_axs);
+				$status = $ycon->refreshAccessToken($pgval["clientid"], $pgval["secret"], $pgval["refresh_token"], $resp_axs);
 				$pgval["access_token"] = $resp_axs["res"]["body"]->access_token;
 				$pgval["cmd_curl"] = $ycon->makeCurlCommand($pgval["access_token"]);
 			} else
 			if ($pgval["code"] !== null) {
 				$pgval["nonce"] = $_SESSION["nonce"];
-				$pgval["client_id"] = $_SESSION["client_id"];
+				$pgval["clientid"] = $_SESSION["clientid"];
 				$pgval["secret"] = $_SESSION["secret"];
 			}
 		}
 
-		$pgval["authorization_url"] = $ycon->makeAuthUrl($pgval["client_id"], $pgval["nonce"], self::MAX_AGE);
+		$pgval["authorization_url"] = $ycon->makeAuthUrl($pgval["clientid"], $pgval["nonce"], self::MAX_AGE);
 
 		return;
+	}
+	// }}}
+
+	// {{{ private function createPageValue($GET, $POST, $FILES, $pgval)
+	private function createPageValue($GET, $POST, $FILES, $pgval)
+	{
+		$pgval["stage"]		= $this->pickupParamVal("stage", $POST);
+		$pgval["mode"]		= $this->pickupParamVal("mode", $POST);
+		$pgval["indent"]	= $this->pickupParamVal("indent", $POST);
+		$pgval["clientid"]	= $this->pickupParamVal("clientid", $POST);
+		$pgval["secret"]	= $this->pickupParamVal("secret", $POST);
+		$pgval["nonce"]		= null;
+		$pgval["code"]		= $this->pickupParamVal("code", $GET);
+		if (is_null($pgval["code"])) {
+			$pgval["code"]	= $this->pickupParamVal("code", $POST);
+		}
+
+		$pgval["access_token"]	= $this->pickupParamVal("access_token", $POST);
+		$pgval["token_type"]	= $this->pickupParamVal("token_type", $POST);
+		$pgval["refresh_token"]	= $this->pickupParamVal("refresh_token", $POST);
+		$pgval["expires_in"]	= $this->pickupParamVal("expires_in", $POST);
+		$pgval["id_token"]		= $this->pickupParamVal("id_token", $POST);
+		$pgval["cmd_curl"]		= $this->pickupParamVal("cmd_curl", $POST);
+
+		$pgval["api"]			= $this->pickupParamVal("api", $POST);
+		$pgval["sellerid"]		= $this->pickupParamVal("sellerid", $POST);
+		$pgval["stcat_key"]		= $this->pickupParamVal("stcat_key", $POST);
+		$pgval["query"]			= $this->pickupParamVal("query", $POST);
+		$pgval["orderid"]		= $this->pickupParamVal("orderid", $POST);
+		$pgval["topicid"]		= $this->pickupParamVal("topicid", $POST);
+		$pgval["completeid"]	= $this->pickupParamVal("completeid", $POST);
+		$pgval["topic_cat"]		= $this->pickupParamVal("topic_cat", $POST);
+		$pgval["title"]			= $this->pickupParamVal("title", $POST);
+		$pgval["body"]			= $this->pickupParamVal("body", $POST);
+		$pgval["objectkey"]		= $this->pickupParamVal("objectkey", $POST);
+		$pgval["file"]			= $this->pickupParamFile("file", $FILES);
+
+		$pgval["item_code"]		= $this->pickupParamVal("item_code", $POST);
+		$pgval["item_path"]		= $this->pickupParamVal("item_path", $POST);
+		$pgval["item_name"]		= $this->pickupParamVal("item_name", $POST);
+		$pgval["item_pcat"]		= $this->pickupParamVal("item_pcat", $POST);
+		$pgval["item_price"]	= $this->pickupParamVal("item_price", $POST);
+
+		$pgval["subsc_repl_id"]	= $this->pickupParamVal("subsc_repl_id", $POST);
+
+		return $pgval;
+	}
+	// }}}
+
+	// {{{ private function pickupParamVal($key, $params)
+	private function pickupParamVal($key, $params)
+	{
+//		$value = array_key_exists($key, $params) ? $params[$key] : null;
+		$value = null;
+		if (array_key_exists($key, $params) && ($params[$key] !== "")) {
+			$value = $params[$key];
+		}
+
+		return $value;
+	}
+	// }}}
+
+	// {{{ private function pickupParamFile($key, $params)
+	private function pickupParamFile($key, $files)
+	{
+		$file = null;
+		if (array_key_exists($key, $files)) {
+			$file = curl_file_create($files[$key]["tmp_name"], $files[$key]["type"], $files[$key]["name"]);
+		}
+
+		return $file;
 	}
 	// }}}
 

@@ -17,6 +17,7 @@
 
 	$pgparts_sel_api = array(
 		"api-order" => "注文API",
+		"api-subsc" => "定期購入API",
 		"api-item" => "商品API",
 		"api-stock" => "在庫API",
 		"api-image" => "画像API",
@@ -68,7 +69,7 @@ td {
 <ol>
 	<li><a href="./">Reset this page</a></li>
 	<li><a href="https://e.developer.yahoo.co.jp/dashboard/" target="_blank" rel="noopener noreferrer">Look at ids in YJDN Management Apps</a></li>
-	<li><form method="post" name="frmid" action="./"><input type="hidden" name="mode" value="<?= YConnectLib::MODE_SETID ?>">Create Auth URL. <label for="text_clientid">Client id: </label><input type="text" name="clientid" id="text_clientid" value="<?= $pgval["client_id"] ?>"> & <label for="text_secret">Secret: </label><input type="text" name="secret" id="text_secret" value="<?= $pgval["secret"] ?>"><input type="submit"></form></li>
+	<li><form method="post" name="frmid" action="./"><input type="hidden" name="mode" value="<?= YConnectLib::MODE_SETID ?>">Create Auth URL. <label for="text_clientid">Client id: </label><input type="text" name="clientid" id="text_clientid" value="<?= $pgval["clientid"] ?>"> & <label for="text_secret">Secret: </label><input type="text" name="secret" id="text_secret" value="<?= $pgval["secret"] ?>"><input type="submit"></form></li>
 	<li><?php if (!FeLib::empty($pgval["authorization_url"])) : ?><a href="<?= $pgval["authorization_url"] ?>"><?php endif; ?>Request User Auth<?php if (!FeLib::empty($pgval["authorization_url"])) : ?></a><?php endif; ?></li>
 	<li><?php if (!FeLib::empty($pgval["code"])) : ?><a href="javascript: submitSpecifedMode('<?= YConnectLib::MODE_ACTOKEN ?>');"><?php endif; ?>Request Access Token<?php if (!FeLib::empty($pgval["code"])) : ?></a><?php endif; ?></li>
 	<li><?php if (!FeLib::empty($pgval["access_token"])) : ?><a href="javascript: submitSpecifedMode('<?= YConnectLib::MODE_REFRESH ?>');"><?php endif; ?>Refresh Access Token<?php if (!FeLib::empty($pgval["access_token"])) : ?></a><?php endif; ?></li>
@@ -120,8 +121,9 @@ td {
 	<tr><td><label for="text_title">タイトル: </label></td><td><input type="text" name="title" id="text_title" value="<?= $pgval["title"] ?>"></td>
 		<td><label for="text_body">本文: </label></td><td><input type="text" name="body" id="text_body" value="<?= $pgval["body"] ?>"></td></tr>
 	<tr><td><label for="form_file">ファイル: </label></td><td colspan="3"><input type="file" name="file" id="form_file" accept=".jpg,.png,.pdf"></td></tr>
-
 	<tr><td><label for="form_objectkey">objectKey: </label></td><td><input type="text" name="objectkey" id="form_objectkey" value="<?= $pgval["objectkey"] ?>"></td>
+		<td></td><td></td></tr>
+	<tr><td><label for="form_subsc_repl_id">定期購入番号: </label></td><td><input type="text" name="subsc_repl_id" id="form_subsc_repl_id" value="<?= $pgval["subsc_repl_id"] ?>"></td>
 		<td></td><td></td></tr>
 
 </table>
@@ -131,10 +133,22 @@ td {
 <div class="apipanel" id="api-order">
 	<ul>
 		<li><?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?><a href="javascript: submitSpecifedMode('<?= YShoppingLib::MODE_ORD_STAT_COUNT ?>');"><?php endif; ?>注文ステータス別件数参照API<?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?></a><?php endif; ?>：[<label for="text_sellerid">ストア</label>]</li>
-		<li><?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?><a href="javascript: submitSpecifedMode('<?= YShoppingLib::MODE_ORD_LIST ?>');"><?php endif; ?>注文検索API (in the past month)<?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?></a><?php endif; ?>：[<label for="text_sellerid">ストア</label>]</li>
+		<li><?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?><a href="javascript: submitSpecifedMode('<?= YShoppingLib::MODE_ORD_LIST_PAST_1M ?>');"><?php endif; ?>注文検索API (in the past a month)<?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?></a><?php endif; ?>：[<label for="text_sellerid">ストア</label>]</li>
+		<li><?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?><a href="javascript: submitSpecifedMode('<?= YShoppingLib::MODE_ORD_LIST_ORDERID ?>');"><?php endif; ?>注文検索API (orderId)<?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?></a><?php endif; ?>：[<label for="text_sellerid">ストア</label>]＋[<label for="text_orderid">注文ID</label>]</li>
 		<li><?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?><a href="javascript: submitSpecifedMode('<?= YShoppingLib::MODE_ORD_INFO ?>');"><?php endif; ?>注文詳細API<?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?></a><?php endif; ?>：[<label for="text_sellerid">ストア</label>]＋[<label for="text_orderid">注文ID</label>]（type of node：注文）</li>
 		<li><?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?><a href="javascript: submitSpecifedMode('<?= YShoppingLib::MODE_ORD_INFO_SHIP ?>');"><?php endif; ?>注文詳細API<?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?></a><?php endif; ?>：[<label for="text_sellerid">ストア</label>]＋[<label for="text_orderid">注文ID</label>]（type of node：注文＋請求＋配送）</li>
 		<li><?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?><a href="javascript: submitSpecifedMode('<?= YShoppingLib::MODE_ORD_INFO_DETAIL ?>');"><?php endif; ?>注文詳細API<?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?></a><?php endif; ?>：[<label for="text_sellerid">ストア</label>]＋[<label for="text_orderid">注文ID</label>]（type of node：注文＋明細＋商品＋セラー＋バイヤー）</li>
+	</ul>
+</div>
+<!-- }}} -->
+
+<!-- {{{ id="api-subsc" -->
+<div class="apipanel" id="api-subsc">
+	<ul>
+		<li><?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?><a href="javascript: submitSpecifedMode('<?= YShoppingLib::MODE_SUBSC_LIST ?>');"><?php endif; ?>定期購入親注文一覧取得API<?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?></a><?php endif; ?>：[<label for="text_sellerid">ストア</label>]</li>
+		<li><?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?><a href="javascript: submitSpecifedMode('<?= YShoppingLib::MODE_SUBSC_REPL_LIST ?>');"><?php endif; ?>定期購入子注文一覧取得API<?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?></a><?php endif; ?>：[<label for="text_sellerid">ストア</label>]＋[<label for="form_subsc_repl_id">定期購入番号</label>]</li>
+		<li><?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?><a href="javascript: submitSpecifedMode('<?= YShoppingLib::MODE_SUBSC_DETAIL ?>');"><?php endif; ?>定期購入親注文詳細取得API<?php if (true) : // (!FeLib::empty($pgval["access_token"])) : ?></a><?php endif; ?>：[<label for="text_sellerid">ストア</label>]＋[<label for="form_subsc_repl_id">定期購入番号</label>]</li>
+
 	</ul>
 </div>
 <!-- }}} -->
@@ -209,7 +223,7 @@ td {
 </table>
 
 <input type="hidden" name="mode" id="mode" value="">
-<input type="hidden" name="clientid" value="<?= $pgval["client_id"] ?>">
+<input type="hidden" name="clientid" value="<?= $pgval["clientid"] ?>">
 <input type="hidden" name="secret" value="<?= $pgval["secret"] ?>">
 <input type="hidden" name="nonce" value="<?= $pgval["nonce"] ?>">
 <input type="hidden" name="code" value="<?= $pgval["code"] ?>">
