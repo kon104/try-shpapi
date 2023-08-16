@@ -252,9 +252,8 @@ class YShoppingLib extends ApiRequest
 		. "BillEmgPhoneNumber,BillMailAddress,BillSection1Field,"
 		. "BillSection1Value,BillSection2Field,BillSection2Value,PayNo,"
 		. "PayNoIssueDate,ConfirmNumber,PaymentTerm,IsApplePay,"
-		. "LineGiftPayMethodName,CombinedPayType,"
-		. "CombinedPayKind,CombinedPayMethod,PayMethodAmount,"
-		. "CombinedPayMethodName,CombinedPayMethodAmount";
+		. "LineGiftPayMethodName,"
+		. "CombinedPayType,CombinedPayKind,CombinedPayMethod,CombinedPayMethodName";
 
 		return $fields;
 	}
@@ -297,7 +296,9 @@ class YShoppingLib extends ApiRequest
 		. "PayCharge,ShipCharge,GiftWrapCharge,Discount,Adjustments,"
 		. "SettleAmount,UsePoint,GiftCardDiscount,TotalPrice,"
 		. "SettlePayAmount,IsGetPointFixAll,"
-		. "TotalMallCouponDiscount,IsGetStoreBonusFixAll";
+		. "TotalMallCouponDiscount,IsGetStoreBonusFixAll,"
+		. "LineGiftCharge,TotalImmediateBonusAmount,TotalImmediateBonusRatio,"
+		. "PayMethodAmount,CombinedPayMethodAmount";
 
 		return $fields;
 	}
@@ -310,7 +311,7 @@ class YShoppingLib extends ApiRequest
 		$fields = ($fields . (empty($fields) ? "" : ","))
 		. "LineId,ItemId,Title,SubCode,SubCodeOption,ItemOption,Inscription,"
 		. "IsUsed,ImageId,IsTaxable,ItemTaxRatio,Jan,ProductId,CategoryId,"
-		. "AffiliateRatio,UnitPrice,Quantity,PointAvailQuantity,ReleaseDate,"
+		. "AffiliateRatio,UnitPrice,NonTaxUnitPrice,Quantity,PointAvailQuantity,ReleaseDate,"
 		. "PointFspCode,PointRatioY,PointRatioSeller,UnitGetPoint,IsGetPointFix,"
 		. "GetPointFixDate,CouponData,CouponDiscount,OriginalPrice,OriginalNum,"
 		. "LeadTimeText,LeadTimeStart,LeadTimeEnd,PriceType,PickAndDeliveryCode,"
@@ -465,6 +466,7 @@ class YShoppingLib extends ApiRequest
 	{
 		$param = array(
 			"seller_id" => $sellerid,
+			"stock" => "true",
 		);
 		if (is_null($stcat_key) != true) $param += array("stcat_key" => $stcat_key);
 		if (is_null($query) != true) $param += array("query" => $query);
