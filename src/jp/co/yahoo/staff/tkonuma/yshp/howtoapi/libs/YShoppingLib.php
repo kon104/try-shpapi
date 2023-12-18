@@ -16,6 +16,7 @@ class YShoppingLib extends ApiRequest
 	public const MODE_ORD_INFO = "shp-ord-info";
 	public const MODE_ORD_INFO_SHIP = "shp-ord-info-ship";
 	public const MODE_ORD_INFO_DETAIL = "shp-ord-info-detail";
+	public const MODE_ORD_PAY_STAT_CHANGE = "shp-ord-pay-stat-change";
 	public const MODE_SUBSC_LIST = "shp-subsc-list";
 	public const MODE_SUBSC_REPL_LIST = "shp-subsc-repl-list";
 	public const MODE_SUBSC_DETAIL = "shp-subsc-detail";
@@ -44,6 +45,7 @@ class YShoppingLib extends ApiRequest
 	private const PATH_ORDER_COUNT			= "/ShoppingWebService/V1/orderCount";
 	private const PATH_ORDER_LIST			= "/ShoppingWebService/V1/orderList";
 	private const PATH_ORDER_INFO			= "/ShoppingWebService/V1/orderInfo";
+	private const PATH_ORDER_PAY_STAT_CHANGE	= "/ShoppingWebService/V1/orderPayStatusChange";
 	private const PATH_SUBSC_LIST			= "/ShoppingWebService/V1/subscription/order/origin/list";
 	private const PATH_SUBSC_REPL_LIST		= "/ShoppingWebService/V1/subscription/order/origin/%s/replica/list";
 	private const PATH_SUBSC_DETAIL			= "/ShoppingWebService/V1/subscription/order/origin/%s";
@@ -343,6 +345,39 @@ class YShoppingLib extends ApiRequest
 		. "IsLogin,FspLicenseCode,FspLicenseName,GuestAuthId";
 
 		return $fields;
+	}
+	// }}}
+
+	// {{{ public function orderPayStatChange($access_token, $sellerid, $orderid, &$resp)
+	public function orderPayStatChange($access_token, $sellerid, $orderid, &$resp)
+	{
+		$optuser = "hoge";
+		$paystat = 1;
+		$payymd = date("Ymd");
+
+		$xml = array(
+			"Req" => array(
+				"Target" => array(
+					"OrderId" => $orderid,
+					"OperationUser" => $optuser
+				),
+				"Order" => array(
+					"Pay" => array(
+						"PayStatus" => $paystat,
+						"PayDate" => $payymd
+					)
+				),
+				"SellerId" => $sellerid
+			)
+		);
+
+		$url = $this->provideApiUrl(self::PATH_ORDER_PAY_STAT_CHANGE);
+
+		parent::setBearerAuth($access_token);
+		$stat = parent::httpPost($url, $xml, parent::CTYPE_XML);
+		$resp = parent::getResponse();
+
+		return $stat;
 	}
 	// }}}
 
