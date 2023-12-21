@@ -1,0 +1,13 @@
+<Req>
+  <SellerId>snbx-cvovsibfi</SellerId>
+  <Target>
+    <OrderId>snbx-cvovsibfi-10000105</OrderId>
+    <IsPointFix>true</IsPointFix>
+    <OperationUser>家風 太郎</OperationUser>
+  </Target>
+  <Order>
+    <Ship>
+      <ShipStatus>1</ShipStatus>
+    </Ship>
+  </Order>
+</Req>

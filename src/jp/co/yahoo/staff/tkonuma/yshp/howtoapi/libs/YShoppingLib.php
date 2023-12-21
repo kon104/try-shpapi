@@ -14,6 +14,7 @@ class YShoppingLib extends ApiRequest
 	public const MODE_ORD_LIST_PAST_1M = "shp-ord-list-past1m";
 	public const MODE_ORD_LIST_ORDERID = "shp-ord-list-orderid";
 	public const MODE_ORD_INFO = "shp-ord-info";
+	public const MODE_ORD_INFO_STAT = "shp-ord-info-stat";
 	public const MODE_ORD_INFO_SHIP = "shp-ord-info-ship";
 	public const MODE_ORD_INFO_DETAIL = "shp-ord-info-detail";
 	public const MODE_ORD_PAY_STAT_CHANGE = "shp-ord-pay-stat-change";
@@ -175,6 +176,9 @@ class YShoppingLib extends ApiRequest
 		$fields = "";
 
 		$fields = $this->orderInfoFieldOrder($fields);
+		if ($mode === self::MODE_ORD_INFO_STAT) {
+			$fields = $this->orderInfoFieldStat($fields);
+		} else
 		if ($mode === self::MODE_ORD_INFO_SHIP) {
 			$fields = $this->orderInfoFieldPay($fields);
 			$fields = $this->orderInfoFieldShip($fields);
@@ -231,6 +235,30 @@ class YShoppingLib extends ApiRequest
 		. "CurrentGoodStoreBenefitApply,CurrentPromoPkgApply,LineGiftOrderId,"
 		. "IsLineGiftOrder,ImmediateBonus,SlowlyShipPoint,"
 		. "SlowlyShipPointFixDate,IsSlowlyShipPointFix";
+
+		return $fields;
+	}
+	// }}}
+
+	// {{{ private function orderInfoFieldStat($fields)
+	private function orderInfoFieldStat($fields)
+	{
+		// Charging
+//		$fields = ($fields . (empty($fields) ? "" : ","))
+//		. "";
+		$fields = ""
+		. "OrderId,ParentOrderId,ChildOrderId,"
+		. ""
+		. "OrderStatus,PayStatus,SettleStatus,ShipStatus,StoreStatus,"
+		. "FraudHoldStatus,GoodStoreStatus,DeliveryStatus,YamatoCoopStatus,"
+		. "ShipInstructStatus,"
+		. ""
+		. "IsSeen,IsSplit,IsRoyalty,IsRoyaltyFix,IsSeller,IsAffiliate,IsRatingB2s,"
+		. "Suspect,IsMultiShip,IsFirstClassDrugIncludes,IsFirstClassDrugAgreement,"
+		. "IsWelcomeGiftIncludes,IsYahooAuctionOrder,IsYahooAuctionDeferred,"
+		. "IsLineGiftOrder,IsSlowlyShipPointFix,IsPayMethodChangePossible,"
+		. "ExcellentDelivery,IsEazy,IsSubscription,IsLineGiftShippable,"
+		. "IsGetStoreBonusFixAll,IsUsed,IsGetPointFix,IsGetStoreBonusFix";
 
 		return $fields;
 	}
