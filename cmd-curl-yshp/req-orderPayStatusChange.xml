@@ -1,0 +1,13 @@
+<Req>
+  <SellerId>snbx-cvovsibfi</SellerId>
+  <Target>
+    <OrderId>snbx-cvovsibfi-10000079</OrderId>
+    <OperationUser>家風 太郎</OperationUser>
+  </Target>
+  <Order>
+    <Pay>
+      <PayStatus>1</PayStatus>
+      <PayDate>20231221</PayDate>
+    </Pay>
+  </Order>
+</Req>

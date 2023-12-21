@@ -30,6 +30,7 @@ class YShoppingController
 			$status = $yshp->orderListOrderId($pgval["access_token"], $pgval["sellerid"], $pgval["orderid"], $resp_shp);
 		} else
 		if (($pgval["mode"] === YShoppingLib::MODE_ORD_INFO) ||
+		    ($pgval["mode"] === YShoppingLib::MODE_ORD_INFO_STAT) ||
 		    ($pgval["mode"] === YShoppingLib::MODE_ORD_INFO_SHIP) ||
 		    ($pgval["mode"] === YShoppingLib::MODE_ORD_INFO_DETAIL)) {
 			$status = $yshp->orderInfo($pgval["access_token"], $pgval["sellerid"], $pgval["orderid"], $pgval["mode"], $resp_shp);
