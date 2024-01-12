@@ -119,7 +119,7 @@ td {
 		<?php endforeach; ?>
 		</select></td></tr>
 	<tr><td><label for="text_title">タイトル: </label></td><td><input type="text" name="title" id="text_title" value="<?= $pgval["title"] ?>"></td>
-		<td><label for="text_body">本文: </label></td><td><input type="text" name="body" id="text_body" value="<?= $pgval["body"] ?>"></td></tr>
+		<td><label for="text_body">本文: </label></td><td><textarea name="body" id="text_body" rows="5"><?= $pgval["body"] ?></textarea></td></tr>
 	<tr><td><label for="form_file">ファイル: </label></td><td colspan="3"><input type="file" name="file" id="form_file" accept=".jpg,.png,.pdf"></td></tr>
 	<tr><td><label for="form_objectkey">objectKey: </label></td><td><input type="text" name="objectkey" id="form_objectkey" value="<?= $pgval["objectkey"] ?>"></td>
 		<td></td><td></td></tr>
